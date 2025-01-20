@@ -1,7 +1,10 @@
+import java.util.Scanner;
+
 public class Bujji {
     String botName;
     String lineDivider;
     String logo;
+    Scanner sc;
 
     public Bujji() {
         this.botName = "Bujji";
@@ -12,11 +15,29 @@ public class Bujji {
                 + " |  _ < | |  | | _   | | _   | |  | |  \n"
                 + " | |_) || |__| || |__| || |__| | _| |_ \n"
                 + " |____/  \\____/  \\____/  \\____/ |_____|\n";
+        sc = new Scanner(System.in);
     }
     public void run() {
         greet();
+        int running = 1;
+        while (running == 1) {
+            String input = getInput();
+            running = processInput(input);
+        }
         exit();
     }
+
+    private String getInput() {
+        return sc.nextLine();
+    }
+
+    private int processInput(String input) {
+        if (input.equals("bye")) {
+            return 0;
+        }
+        return 1;
+    }
+
 
     private void greet(){
         print(lineDivider);
@@ -26,8 +47,9 @@ public class Bujji {
     }
 
     private void exit(){
+        print(lineDivider);
         print("Bye. Hope to see you again soon!");
-        System.out.println(lineDivider);
+        print(lineDivider);
     }
 
     private void print(String str){
