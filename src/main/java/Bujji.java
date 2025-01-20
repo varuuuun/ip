@@ -35,9 +35,15 @@ public class Bujji {
         if (input.equals("bye")) {
             return 0;
         }
+        echo(input);
         return 1;
     }
 
+    private void echo(String str){
+        print(lineDivider);
+        print(str);
+        print(lineDivider);
+    }
 
     private void greet(){
         print(lineDivider);
