@@ -1,6 +1,7 @@
 public class Bujji {
     public static void main(String[] args) {
         greet();
+        exit();
     }
 
     public static void greet(){
@@ -17,4 +18,11 @@ public class Bujji {
         System.out.println("What can I do for you?");
         System.out.println(lineDivider);
     }
+
+    public static void exit(){
+        String lineDivider = "____________________________________________________________";
+        System.out.println("Bye. Hope to see you again soon!");
+        System.out.println(lineDivider);
+    }
+
 }
