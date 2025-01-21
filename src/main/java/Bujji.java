@@ -3,14 +3,12 @@ import java.util.Scanner;
 
 public class Bujji {
     String botName;
-    String lineDivider;
     String logo;
     Scanner sc;
     ArrayList<Task> taskList;
 
     public Bujji() {
         this.botName = "Bujji";
-        this.lineDivider = "____________________________________________________________";
         this.logo = "  ____   _    _       _       _  _____ \n"
                 + " |  _ \\ | |  | |     | |     | ||_   _|\n"
                 + " | |_) || |  | |     | |     | |  | |  \n"
@@ -54,57 +52,46 @@ public class Bujji {
     }
 
     private void echo(String str){
-        print(lineDivider);
         print(str);
-        print(lineDivider);
     }
 
     private void add(String str){
         taskList.add(new Task(str));
-        print(lineDivider);
         print("added: " + str);
-        print(lineDivider);
     }
 
     private void mark(int i){
         Task t = taskList.get(i);
         t.setDone();
-        print(lineDivider);
         print("Nice! I've marked this task as done: \n\t" + t);
-        print(lineDivider);
     }
 
     private void unmark(int i){
         Task t = taskList.get(i);
         t.setNotDone();
-        print(lineDivider);
         print("OK, I've marked this task as not done yet: \n\t" + t);
-        print(lineDivider);
     }
 
     private void list(){
-        print(lineDivider);
+        StringBuilder printString = new StringBuilder();
         for (int i = 0; i < taskList.size(); i++) {
-            print(i+1 + ". " + taskList.get(i));
+            printString.append(i + 1).append(". ").append(taskList.get(i)).append("\n");
         }
-        print(lineDivider);
+        print(printString.toString());
     }
 
     private void greet(){
-        print(lineDivider);
-        print("Hello! I'm " + botName);
-        print("What can I do for you?");
-        print(lineDivider);
+        print("Hello! I'm " + botName + "\n" + "What can I do for you?");
     }
 
     private void exit(){
-        print(lineDivider);
         print("Bye. Hope to see you again soon!");
-        print(lineDivider);
     }
 
     private void print(String str){
+        System.out.println("____________________________________________________________");
         System.out.println(str);
+        System.out.println("____________________________________________________________");
     }
 
 }
