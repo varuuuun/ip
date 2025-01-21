@@ -45,8 +45,14 @@ public class Bujji {
         } else if (input.startsWith("unmark")){
             //TODO: Error checks
             unmark(Integer.parseInt(input.split(" ")[1]) - 1);
+        } else if (input.startsWith("todo ")) {
+            addTodo(input.substring(5));
+        } else if (input.startsWith("deadline ")) {
+            addDeadline(input.substring(9));
+        } else if (input.startsWith("event ")) {
+            addEvent(input.substring(6));
         } else {
-            add(input);
+            add(new Task(input));
         }
         return 1;
     }
@@ -55,9 +61,21 @@ public class Bujji {
         print(str);
     }
 
-    private void add(String str){
-        taskList.add(new Task(str));
-        print("added: " + str);
+    private void addTodo(String str){
+        add(new Todo(str));
+    }
+
+    private void addDeadline(String str){
+        add(new Deadline(str));
+    }
+
+    private void addEvent(String str){
+        add(new Event(str));
+    }
+
+    private void add(Task t){
+        taskList.add(t);
+        print("Got it. I've added this task:\n" + t + "\n Now you have " + taskList.size() + " tasks in the list.");
     }
 
     private void mark(int i){
