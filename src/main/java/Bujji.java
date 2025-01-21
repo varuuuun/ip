@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+import static java.lang.Math.min;
 
 public class Bujji {
     String botName;
@@ -66,16 +67,28 @@ public class Bujji {
     }
 
     private void addDeadline(String str){
-        add(new Deadline(str));
+        String[] parts = str.split(" /by ");
+        add(new Deadline(parts[0], parts[1]));
     }
 
     private void addEvent(String str){
-        add(new Event(str));
+        int from = str.indexOf(" /from ");
+        int to = str.indexOf(" /to ");
+        String descStr = str.substring(0,min(from, to));
+        String fromStr, toStr;
+        if (from < to){
+            fromStr = str.substring(from+7,to);
+            toStr = str.substring(to+5);
+        } else {
+            fromStr = str.substring(from+6);
+            toStr = str.substring(to+4, from);
+        }
+        add(new Event(descStr, fromStr, toStr));
     }
 
     private void add(Task t){
         taskList.add(t);
-        print("Got it. I've added this task:\n" + t + "\n Now you have " + taskList.size() + " tasks in the list.");
+        print("Got it. I've added this task:\n\t" + t + "\nNow you have " + taskList.size() + " tasks in the list.");
     }
 
     private void mark(int i){
