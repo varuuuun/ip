@@ -34,7 +34,15 @@ public class Mitri {
 
         if (input.equals("list")) {
             list();
-        } else if (input.startsWith("mark")){
+        } else if (input.startsWith("delete ")) {
+            try {
+                delete(Integer.parseInt(input.split(" ")[1]) - 1);
+            } catch (NumberFormatException e) {
+                print("Error: Not a number. Please give the index of the task to remove!");
+            } catch (IndexOutOfBoundsException e) {
+                print("Error: Index out of bounds. Please give the correct index!");
+            }
+        } else if (input.startsWith("mark ")){
             try {
                 mark(Integer.parseInt(input.split(" ")[1]) - 1);
             } catch (NumberFormatException e) {
@@ -42,7 +50,7 @@ public class Mitri {
             } catch (IndexOutOfBoundsException e) {
                 print("Error: Index out of bounds. Please give the correct index!");
             }
-        } else if (input.startsWith("unmark")){
+        } else if (input.startsWith("unmark ")){
             try {
                 unmark(Integer.parseInt(input.split(" ")[1]) - 1);
             } catch (NumberFormatException e) {
@@ -91,6 +99,11 @@ public class Mitri {
 
     private void echo(String str){
         print(str);
+    }
+
+    private void delete(int index){
+        Task t = taskList.remove(index);
+        print("Got it. I've removed this task:\n\t" + t + "\nNow you have " + taskList.size() + " tasks in the list.");
     }
 
     private void addTodo(String str){
