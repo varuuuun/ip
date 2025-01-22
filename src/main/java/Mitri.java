@@ -88,19 +88,19 @@ public class Mitri {
     private void mark(int i){
         Task t = taskList.get(i);
         t.setDone();
-        print("Nice! I've marked this task as done: \n\t" + t);
+        print("Nice! I've marked this task as done:\n\t" + t);
     }
 
     private void unmark(int i){
         Task t = taskList.get(i);
         t.setNotDone();
-        print("OK, I've marked this task as not done yet: \n\t" + t);
+        print("OK, I've marked this task as not done yet:\n\t" + t);
     }
 
     private void list(){
-        StringBuilder printString = new StringBuilder();
+        StringBuilder printString = new StringBuilder("Here are the tasks in your list:");
         for (int i = 0; i < taskList.size(); i++) {
-            printString.append(i + 1).append(". ").append(taskList.get(i)).append("\n");
+            printString.append("\n\t").append(i + 1).append(". ").append(taskList.get(i));
         }
         print(printString.toString());
     }
@@ -110,6 +110,7 @@ public class Mitri {
     }
 
     private void exit(){
+        sc.close();
         print("Bye. Hope to see you again soon!");
     }
 
