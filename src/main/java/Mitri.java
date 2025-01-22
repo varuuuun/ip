@@ -2,20 +2,14 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import static java.lang.Math.min;
 
-public class Bujji {
+public class Mitri {
     String botName;
     String logo;
     Scanner sc;
     ArrayList<Task> taskList;
 
-    public Bujji() {
-        this.botName = "Bujji";
-        this.logo = "  ____   _    _       _       _  _____ \n"
-                + " |  _ \\ | |  | |     | |     | ||_   _|\n"
-                + " | |_) || |  | |     | |     | |  | |  \n"
-                + " |  _ < | |  | | _   | | _   | |  | |  \n"
-                + " | |_) || |__| || |__| || |__| | _| |_ \n"
-                + " |____/  \\____/  \\____/  \\____/ |_____|\n";
+    public Mitri() {
+        this.botName = "Mitri";
         sc = new Scanner(System.in);
         taskList = new ArrayList<Task>(100);
     }
