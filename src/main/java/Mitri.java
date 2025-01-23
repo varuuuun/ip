@@ -28,71 +28,82 @@ public class Mitri {
     }
 
     private int processInput(String input) {
+        String[] parts = input.split(" ");
         if (input.equals("bye")) {
             return 0;
         }
-
-        if (input.equals("list")) {
-            list();
-        } else if (input.startsWith("delete ")) {
-            try {
-                delete(Integer.parseInt(input.split(" ")[1]) - 1);
-            } catch (NumberFormatException e) {
-                print("Error: Not a number. Please give the index of the task to remove!");
-            } catch (IndexOutOfBoundsException e) {
-                print("Error: Index out of bounds. Please give the correct index!");
-            }
-        } else if (input.startsWith("mark ")){
-            try {
-                mark(Integer.parseInt(input.split(" ")[1]) - 1);
-            } catch (NumberFormatException e) {
-                print("Error: Not a number. Please give the index of the task to mark!");
-            } catch (IndexOutOfBoundsException e) {
-                print("Error: Index out of bounds. Please give the correct index!");
-            }
-        } else if (input.startsWith("unmark ")){
-            try {
-                unmark(Integer.parseInt(input.split(" ")[1]) - 1);
-            } catch (NumberFormatException e) {
-                print("Error: Not a number. Please give the index of the task to unmark!");
-            } catch (IndexOutOfBoundsException e) {
-                print("Error: Index out of bounds. Please give the correct index!");
-            }
-
-        } else if (input.startsWith("todo ")) {
-            if (input.length() == 5){
-                print("Error: The description of a todo cannot be empty.");
-            }
-            else {
-                addTodo(input.substring(5));
-            }
-        } else if (input.startsWith("deadline ")) {
-            if (input.length() == 9){
-                print("Error: Deadline cannot be empty.");
-            }
-            else {
-                try {
-                    addDeadline(input.substring(9));
-                } catch (IndexOutOfBoundsException e) {
-                    print("Error: Deadline missing by field.");
-                } catch (IllegalArgumentException e) {
-                    print("Error: Deadline missing description.");
-                }
-            }
-        } else if (input.startsWith("event ")) {
-            if (input.length() == 6){
-                print("Error: Event cannot be empty.");
-            }
-            else {
-                try {
-                    addEvent(input.substring(6));
-                }
-                catch (IllegalArgumentException e){
-                    print("Error: Event missing one or more fields. Ensure you provide description, from and by fields.");
-                }
-            }
-        } else {
+        Commands c;
+        try {
+            c = Commands.getCommand(parts[0]);
+        } catch (IllegalArgumentException e){
             print("Error: I'm sorry, but I don't know what that means :(");
+            return 1;
+        }
+        switch (c) {
+            case LIST:
+                list();
+                break;
+            case BYE:
+                return 0;
+            case DELETE:
+                try {
+                    delete(Integer.parseInt(parts[1]) - 1);
+                } catch (NumberFormatException e) {
+                    print("Error: Not a number. Please give the index of the task to remove!");
+                } catch (IndexOutOfBoundsException e) {
+                    print("Error: Index out of bounds. Please give the correct index!");
+                }
+                break;
+            case MARK:
+                try {
+                    mark(Integer.parseInt(parts[1]) - 1);
+                } catch (NumberFormatException e) {
+                    print("Error: Not a number. Please give the index of the task to mark!");
+                } catch (IndexOutOfBoundsException e) {
+                    print("Error: Index out of bounds. Please give the correct index!");
+                }
+                break;
+            case UNMARK:
+                try {
+                    unmark(Integer.parseInt(parts[1]) - 1);
+                } catch (NumberFormatException e) {
+                    print("Error: Not a number. Please give the index of the task to unmark!");
+                } catch (IndexOutOfBoundsException e) {
+                    print("Error: Index out of bounds. Please give the correct index!");
+                }
+                break;
+            case TODO:
+                if (input.length() <= 5) {
+                    print("Error: The description of a todo cannot be empty.");
+                } else {
+                    addTodo(input.substring(5));
+                }
+                break;
+            case DEADLINE:
+                if (input.length() <= 9) {
+                    print("Error: Deadline cannot be empty.");
+                } else {
+                    try {
+                        addDeadline(input.substring(9));
+                    } catch (IndexOutOfBoundsException e) {
+                        print("Error: Deadline missing by field.");
+                    } catch (IllegalArgumentException e) {
+                        print("Error: Deadline missing description.");
+                    }
+                }
+                break;
+            case EVENT:
+                if (input.length() <= 6) {
+                    print("Error: Event cannot be empty.");
+                } else {
+                    try {
+                        addEvent(input.substring(6));
+                    } catch (IllegalArgumentException e) {
+                        print("Error: Event missing one or more fields. Ensure you provide description, from and by fields.");
+                    }
+                }
+                break;
+
         }
         return 1;
     }
