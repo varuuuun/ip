@@ -39,72 +39,41 @@ public class Mitri {
             print("Error: I'm sorry, but I don't know what that means :(");
             return 1;
         }
-        switch (c) {
-            case LIST:
-                list();
-                break;
-            case BYE:
-                return 0;
-            case DELETE:
-                try {
+        try {
+            switch (c) {
+                case LIST:
+                    list();
+                    break;
+                case BYE:
+                    return 0;
+                case DELETE:
                     delete(Integer.parseInt(parts[1]) - 1);
-                } catch (NumberFormatException e) {
-                    print("Error: Not a number. Please give the index of the task to remove!");
-                } catch (IndexOutOfBoundsException e) {
-                    print("Error: Index out of bounds. Please give the correct index!");
-                }
-                break;
-            case MARK:
-                try {
+                    break;
+                case MARK:
                     mark(Integer.parseInt(parts[1]) - 1);
-                } catch (NumberFormatException e) {
-                    print("Error: Not a number. Please give the index of the task to mark!");
-                } catch (IndexOutOfBoundsException e) {
-                    print("Error: Index out of bounds. Please give the correct index!");
-                }
-                break;
-            case UNMARK:
-                try {
+                    break;
+                case UNMARK:
                     unmark(Integer.parseInt(parts[1]) - 1);
-                } catch (NumberFormatException e) {
-                    print("Error: Not a number. Please give the index of the task to unmark!");
-                } catch (IndexOutOfBoundsException e) {
-                    print("Error: Index out of bounds. Please give the correct index!");
-                }
-                break;
-            case TODO:
-                if (input.length() <= 5) {
-                    print("Error: The description of a todo cannot be empty.");
-                } else {
-                    addTodo(input.substring(5));
-                }
-                break;
-            case DEADLINE:
-                if (input.length() <= 9) {
-                    print("Error: Deadline cannot be empty.");
-                } else {
-                    try {
-                        addDeadline(input.substring(9));
-                    } catch (IndexOutOfBoundsException e) {
-                        print("Error: Deadline missing by field.");
-                    } catch (IllegalArgumentException e) {
-                        print("Error: Deadline missing description.");
-                    }
-                }
-                break;
-            case EVENT:
-                if (input.length() <= 6) {
-                    print("Error: Event cannot be empty.");
-                } else {
-                    try {
-                        addEvent(input.substring(6));
-                    } catch (IllegalArgumentException e) {
-                        print("Error: Event missing one or more fields. Ensure you provide description, from and by fields.");
-                    }
-                }
-                break;
+                    break;
+                case TODO:
+                    addTodo(input.substring(4));
+                    break;
+                case DEADLINE:
+                    addDeadline(input.substring(8));
+                    break;
+                case EVENT:
+                    addEvent(input.substring(5));
+                    break;
 
+            }
+        } catch (NumberFormatException e) {
+            print("Error: Not a number. Please give the index of the task!");
+        } catch (IndexOutOfBoundsException e){
+            print("Error: Index out of bounds. Please give the correct index!");
+        } catch (IllegalArgumentException e) {
+            print("Error: " + e.getMessage());
         }
+
         return 1;
     }
 
@@ -117,16 +86,19 @@ public class Mitri {
         print("Got it. I've removed this task:\n\t" + t + "\nNow you have " + taskList.size() + " tasks in the list.");
     }
 
-    private void addTodo(String str){
-        add(new Todo(str));
+    private void addTodo(String str) throws IllegalArgumentException{
+        if (str.isBlank()){
+            throw new IllegalArgumentException("The description of a todo cannot be empty.");
+        }
+        add(new Todo(str.stripLeading()));
     }
 
-    private void addDeadline(String str) throws IndexOutOfBoundsException, IllegalArgumentException {
+    private void addDeadline(String str) throws IllegalArgumentException {
         String[] parts = str.split(" /by ");
-        if (parts[0].isBlank()){
-            throw new IllegalArgumentException();
+        if (parts[0].isBlank() || parts.length == 1 || parts[1].isBlank()){
+            throw new IllegalArgumentException("Deadline missing one or more fields. \nEnsure you provide description and by fields.");
         }
-        add(new Deadline(parts[0], parts[1]));
+        add(new Deadline(parts[0].stripLeading(), parts[1]));
     }
 
     private void addEvent(String str) throws IllegalArgumentException{
@@ -134,18 +106,25 @@ public class Mitri {
         int to = str.indexOf(" /to ");
 
         if ((from <= 0) || (to <= 0)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Event missing one or more fields. \nEnsure you provide description, from and to fields.");
         }
+
         String descStr = str.substring(0,min(from, to));
         String fromStr, toStr;
+
         if (from < to){
             fromStr = str.substring(from+7,to);
             toStr = str.substring(to+5);
         } else {
-            fromStr = str.substring(from+6);
-            toStr = str.substring(to+4, from);
+            fromStr = str.substring(from+7);
+            toStr = str.substring(to+5, from);
         }
-        add(new Event(descStr, fromStr, toStr));
+
+        if (descStr.isBlank() || fromStr.isBlank() || toStr.isBlank()) {
+            throw new IllegalArgumentException("Event has one or more empty fields. Ensure you provide description, from and to fields.");
+        }
+
+        add(new Event(descStr.stripLeading(), fromStr, toStr));
     }
 
     private void add(Task t){
