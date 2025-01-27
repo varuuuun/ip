@@ -23,6 +23,39 @@ public class Mitri {
         exit();
     }
 
+    public void loadFromFile() {
+        try{
+            Scanner fileScanner = new Scanner(saveFile);
+            while (fileScanner.hasNextLine()) {
+                taskList.add(readTask(fileScanner.nextLine()));
+            }
+            fileScanner.close();
+        } catch (FileNotFoundException e) {
+            //Do nothing
+        }
+    }
+
+    public Task readTask(String input) {
+        String[] parts = input.split(" \\| ");
+        Task t;
+        switch (parts[0]) {
+            case "D":
+                t = new Deadline(String.join(" | ", Arrays.copyOfRange(parts, 2, parts.length-1)), parts[parts.length-1]);
+                break;
+            case "E":
+                t = new Event(String.join(" | ", Arrays.copyOfRange(parts, 2, parts.length-2)), parts[parts.length-2], parts[parts.length-1]);
+                break;
+            default:
+                t =  new Todo(String.join(" | ", Arrays.copyOfRange(parts, 2, parts.length)));
+                break;
+        }
+        if (parts[1].equals("1")){
+            t.setDone();
+        } else{
+            t.setNotDone();
+        }
+        return t;
+    }
     private String getInput() {
         return sc.nextLine();
     }
