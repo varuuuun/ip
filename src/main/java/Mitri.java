@@ -1,4 +1,11 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 import static java.lang.Math.min;
 
@@ -7,13 +14,25 @@ public class Mitri {
     String logo;
     Scanner sc;
     ArrayList<Task> taskList;
+    File saveFile;
 
     public Mitri() {
         this.botName = "Mitri";
         sc = new Scanner(System.in);
         taskList = new ArrayList<Task>(100);
+        saveFile = new File("data/mitri.txt");
+        try {
+            if (!saveFile.exists()) {
+                Files.createDirectories(Paths.get("data"));
+                saveFile.createNewFile();
+            }
+        }catch (IOException e){
+            print("Error " + e.getMessage());
+        }
     }
+
     public void run() {
+        loadFromFile();
         greet();
         int running = 1;
         while (running == 1) {
@@ -230,6 +249,7 @@ public class Mitri {
 
     private void exit(){
         sc.close();
+        writeToFile();
         print("Bye. Hope to see you again soon!");
     }
 
