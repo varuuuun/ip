@@ -1,4 +1,11 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 import static java.lang.Math.min;
 
@@ -7,13 +14,25 @@ public class Mitri {
     String logo;
     Scanner sc;
     ArrayList<Task> taskList;
+    File saveFile;
 
     public Mitri() {
         this.botName = "Mitri";
         sc = new Scanner(System.in);
         taskList = new ArrayList<Task>(100);
+        saveFile = new File("data/mitri.txt");
+        try {
+            if (!saveFile.exists()) {
+                Files.createDirectories(Paths.get("data"));
+                saveFile.createNewFile();
+            }
+        }catch (IOException e){
+            print("Error " + e.getMessage());
+        }
     }
+
     public void run() {
+        loadFromFile();
         greet();
         int running = 1;
         while (running == 1) {
@@ -21,6 +40,78 @@ public class Mitri {
             running = processInput(input);
         }
         exit();
+    }
+
+    public void loadFromFile() {
+        try{
+            Scanner fileScanner = new Scanner(saveFile);
+            while (fileScanner.hasNextLine()) {
+                taskList.add(readTask(fileScanner.nextLine()));
+            }
+            fileScanner.close();
+        } catch (FileNotFoundException e) {
+            //Do nothing
+        }
+    }
+
+    public Task readTask(String input) {
+        String[] parts = input.split(" \\| ");
+        Task t;
+        switch (parts[0]) {
+            case "D":
+                t = new Deadline(String.join(" | ", Arrays.copyOfRange(parts, 2, parts.length-1)), parts[parts.length-1]);
+                break;
+            case "E":
+                t = new Event(String.join(" | ", Arrays.copyOfRange(parts, 2, parts.length-2)), parts[parts.length-2], parts[parts.length-1]);
+                break;
+            default:
+                t =  new Todo(String.join(" | ", Arrays.copyOfRange(parts, 2, parts.length)));
+                break;
+        }
+        if (parts[1].equals("1")){
+            t.setDone();
+        } else{
+            t.setNotDone();
+        }
+        return t;
+    }
+
+    public void writeToFile() {
+        try {
+            FileWriter fileWriter = new FileWriter(saveFile);
+            StringBuilder writeStr = new StringBuilder();
+            for (Task task : taskList) {
+                writeStr.append(writeTask(task)).append("\n");
+            }
+            fileWriter.write(writeStr.toString());
+            fileWriter.close();
+        } catch (IOException e) {
+            print("Error saving tasks to file. "+e.getMessage());
+        }
+    }
+
+    public String writeTask(Task task) {
+        String output = task.toString();
+        switch (output.charAt(1)){
+            case 'D':
+                output = output.replace(" (by: ", " | ");
+                output = output.substring(0, output.length() - 1);
+                break;
+            case 'E':
+                output = output.replace(" (from: ", " | ");
+                int to_start = output.indexOf(" to: ", output.indexOf(" | "));
+                output = output.substring(0, to_start) + " | " + output.substring(to_start + 5);
+                output = output.substring(0, output.length() - 1);
+                break;
+        }
+
+        output = switch (output.charAt(4)) {
+            case 'X' -> output.charAt(1) + " | 1 | " + output.substring(7);
+            case ' ' -> output.charAt(1) + " | 0 | " + output.substring(7);
+            default -> output;
+        };
+
+        return output;
     }
 
     private String getInput() {
@@ -158,6 +249,7 @@ public class Mitri {
 
     private void exit(){
         sc.close();
+        writeToFile();
         print("Bye. Hope to see you again soon!");
     }
 
