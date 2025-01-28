@@ -16,4 +16,9 @@ public class Event extends Task{
     public String toString(){
         return "[E]" + super.toString() + " (from: " + from.format(formatter) + " to: " + to.format(formatter) + ")";
     }
+
+    @Override
+    public String toSave(){
+        return "E | " + super.toSave() + " | " + from.toString() + " | " + to.toString();
+    }
 }

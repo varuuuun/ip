@@ -94,30 +94,6 @@ public class Mitri {
         }
     }
 
-    public String writeTask(Task task) {
-        String output = task.toString();
-        switch (output.charAt(1)){
-            case 'D':
-                output = output.replace(" (by: ", " | ");
-                output = output.substring(0, output.length() - 1);
-                break;
-            case 'E':
-                output = output.replace(" (from: ", " | ");
-                int to_start = output.indexOf(" to: ", output.indexOf(" | "));
-                output = output.substring(0, to_start) + " | " + output.substring(to_start + 5);
-                output = output.substring(0, output.length() - 1);
-                break;
-        }
-
-        output = switch (output.charAt(4)) {
-            case 'X' -> output.charAt(1) + " | 1 | " + output.substring(7);
-            case ' ' -> output.charAt(1) + " | 0 | " + output.substring(7);
-            default -> output;
-        };
-
-        return output;
-    }
-
     private String getInput() {
         return sc.nextLine();
     }
