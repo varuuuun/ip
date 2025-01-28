@@ -4,6 +4,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -59,10 +63,10 @@ public class Mitri {
         Task t;
         switch (parts[0]) {
             case "D":
-                t = new Deadline(String.join(" | ", Arrays.copyOfRange(parts, 2, parts.length-1)), parts[parts.length-1]);
+                t = new Deadline(String.join(" | ", Arrays.copyOfRange(parts, 2, parts.length-1)), LocalDateTime.parse(parts[parts.length-1]));
                 break;
             case "E":
-                t = new Event(String.join(" | ", Arrays.copyOfRange(parts, 2, parts.length-2)), parts[parts.length-2], parts[parts.length-1]);
+                t = new Event(String.join(" | ", Arrays.copyOfRange(parts, 2, parts.length-2)), LocalDateTime.parse(parts[parts.length-2]), LocalDateTime.parse(parts[parts.length-1]));
                 break;
             default:
                 t =  new Todo(String.join(" | ", Arrays.copyOfRange(parts, 2, parts.length)));
@@ -81,37 +85,13 @@ public class Mitri {
             FileWriter fileWriter = new FileWriter(saveFile);
             StringBuilder writeStr = new StringBuilder();
             for (Task task : taskList) {
-                writeStr.append(writeTask(task)).append("\n");
+                writeStr.append(task.toSave()).append("\n");
             }
             fileWriter.write(writeStr.toString());
             fileWriter.close();
         } catch (IOException e) {
             print("Error saving tasks to file. "+e.getMessage());
         }
-    }
-
-    public String writeTask(Task task) {
-        String output = task.toString();
-        switch (output.charAt(1)){
-            case 'D':
-                output = output.replace(" (by: ", " | ");
-                output = output.substring(0, output.length() - 1);
-                break;
-            case 'E':
-                output = output.replace(" (from: ", " | ");
-                int to_start = output.indexOf(" to: ", output.indexOf(" | "));
-                output = output.substring(0, to_start) + " | " + output.substring(to_start + 5);
-                output = output.substring(0, output.length() - 1);
-                break;
-        }
-
-        output = switch (output.charAt(4)) {
-            case 'X' -> output.charAt(1) + " | 1 | " + output.substring(7);
-            case ' ' -> output.charAt(1) + " | 0 | " + output.substring(7);
-            default -> output;
-        };
-
-        return output;
     }
 
     private String getInput() {
@@ -157,6 +137,8 @@ public class Mitri {
                     break;
 
             }
+        } catch (DateTimeParseException e){
+            print("Error: You did not provide a readable date/time");
         } catch (NumberFormatException e) {
             print("Error: Not a number. Please give the index of the task!");
         } catch (IndexOutOfBoundsException e){
@@ -184,15 +166,15 @@ public class Mitri {
         add(new Todo(str.stripLeading()));
     }
 
-    private void addDeadline(String str) throws IllegalArgumentException {
+    private void addDeadline(String str) throws IllegalArgumentException, DateTimeParseException {
         String[] parts = str.split(" /by ");
         if (parts[0].isBlank() || parts.length == 1 || parts[1].isBlank()){
             throw new IllegalArgumentException("Deadline missing one or more fields. \nEnsure you provide description and by fields.");
         }
-        add(new Deadline(parts[0].stripLeading(), parts[1]));
+        add(new Deadline(parts[0].stripLeading(), extractDateTime(parts[1])));
     }
 
-    private void addEvent(String str) throws IllegalArgumentException{
+    private void addEvent(String str) throws IllegalArgumentException, DateTimeParseException{
         int from = str.indexOf(" /from ");
         int to = str.indexOf(" /to ");
 
@@ -215,7 +197,17 @@ public class Mitri {
             throw new IllegalArgumentException("Event has one or more empty fields. Ensure you provide description, from and to fields.");
         }
 
-        add(new Event(descStr.stripLeading(), fromStr, toStr));
+        add(new Event(descStr.stripLeading(), extractDateTime(fromStr), extractDateTime(toStr)));
+    }
+
+    private LocalDateTime extractDateTime(String str) {
+        if (str.indexOf('T')>0){
+            return LocalDateTime.parse(str);
+        } else if (str.indexOf('-')>0) {
+            return LocalDate.parse(str).atStartOfDay();
+        } else {
+            return LocalDateTime.of(LocalDate.now(), LocalTime.parse(str));
+        }
     }
 
     private void add(Task t){
