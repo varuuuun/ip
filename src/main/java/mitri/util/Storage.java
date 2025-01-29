@@ -1,3 +1,7 @@
+package mitri.util;
+
+import mitri.ui.Ui;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;

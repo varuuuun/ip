@@ -1,3 +1,8 @@
+package mitri.util;
+
+
+import mitri.task.Task;
+
 import java.util.ArrayList;
 
 public class TaskList {
