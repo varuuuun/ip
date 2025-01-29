@@ -16,13 +16,13 @@ import static java.lang.Math.min;
 public class Mitri {
     String botName;
     String logo;
-    Scanner sc;
+    Ui ui;
     ArrayList<Task> taskList;
     File saveFile;
 
     public Mitri() {
         this.botName = "Mitri";
-        sc = new Scanner(System.in);
+        ui = new Ui();
         taskList = new ArrayList<Task>(100);
         saveFile = new File("data/mitri.txt");
         try {
@@ -31,7 +31,7 @@ public class Mitri {
                 saveFile.createNewFile();
             }
         }catch (IOException e){
-            print("Error " + e.getMessage());
+            ui.printError(e.getMessage());
         }
     }
 
@@ -40,7 +40,7 @@ public class Mitri {
         greet();
         int running = 1;
         while (running == 1) {
-            String input = getInput();
+            String input = ui.getInput();
             running = processInput(input);
         }
         exit();
@@ -90,12 +90,8 @@ public class Mitri {
             fileWriter.write(writeStr.toString());
             fileWriter.close();
         } catch (IOException e) {
-            print("Error saving tasks to file. "+e.getMessage());
+            ui.printError("Could not save tasks to file. "+e.getMessage());
         }
-    }
-
-    private String getInput() {
-        return sc.nextLine();
     }
 
     private int processInput(String input) {
@@ -107,7 +103,7 @@ public class Mitri {
         try {
             c = Commands.getCommand(parts[0]);
         } catch (IllegalArgumentException e){
-            print("Error: I'm sorry, but I don't know what that means :(");
+            ui.printError("I'm sorry, but I don't know what that means :(");
             return 1;
         }
         try {
@@ -138,25 +134,25 @@ public class Mitri {
 
             }
         } catch (DateTimeParseException e){
-            print("Error: You did not provide a readable date/time");
+            ui.printError("You did not provide a readable date/time");
         } catch (NumberFormatException e) {
-            print("Error: Not a number. Please give the index of the task!");
+            ui.printError("Not a number. Please give the index of the task!");
         } catch (IndexOutOfBoundsException e){
-            print("Error: Index out of bounds. Please give the correct index!");
+            ui.printError("Index out of bounds. Please give the correct index!");
         } catch (IllegalArgumentException e) {
-            print("Error: " + e.getMessage());
+            ui.printError(e.getMessage());
         }
 
         return 1;
     }
 
     private void echo(String str){
-        print(str);
+        ui.print(str);
     }
 
     private void delete(int index){
         Task t = taskList.remove(index);
-        print("Got it. I've removed this task:\n\t" + t + "\nNow you have " + taskList.size() + " tasks in the list.");
+        ui.print("Got it. I've removed this task:\n\t" + t + "\nNow you have " + taskList.size() + " tasks in the list.");
     }
 
     private void addTodo(String str) throws IllegalArgumentException{
@@ -212,19 +208,19 @@ public class Mitri {
 
     private void add(Task t){
         taskList.add(t);
-        print("Got it. I've added this task:\n\t" + t + "\nNow you have " + taskList.size() + " tasks in the list.");
+        ui.print("Got it. I've added this task:\n\t" + t + "\nNow you have " + taskList.size() + " tasks in the list.");
     }
 
     private void mark(int i) throws IndexOutOfBoundsException {
         Task t = taskList.get(i);
         t.setDone();
-        print("Nice! I've marked this task as done:\n\t" + t);
+        ui.print("Nice! I've marked this task as done:\n\t" + t);
     }
 
     private void unmark(int i) throws IndexOutOfBoundsException {
         Task t = taskList.get(i);
         t.setNotDone();
-        print("OK, I've marked this task as not done yet:\n\t" + t);
+        ui.print("OK, I've marked this task as not done yet:\n\t" + t);
     }
 
     private void list(){
@@ -232,23 +228,19 @@ public class Mitri {
         for (int i = 0; i < taskList.size(); i++) {
             printString.append("\n\t").append(i + 1).append(". ").append(taskList.get(i));
         }
-        print(printString.toString());
+        ui.print(printString.toString());
     }
 
     private void greet(){
-        print("Hello! I'm " + botName + "\n" + "What can I do for you?");
+        ui.print("Hello! I'm " + botName + "\n" + "What can I do for you?");
     }
 
     private void exit(){
-        sc.close();
+        ui.closeScanner();
         writeToFile();
-        print("Bye. Hope to see you again soon!");
+        ui.print("Bye. Hope to see you again soon!");
     }
 
-    private void print(String str){
-        System.out.println("____________________________________________________________");
-        System.out.println(str);
-        System.out.println("____________________________________________________________");
-    }
+
 
 }
