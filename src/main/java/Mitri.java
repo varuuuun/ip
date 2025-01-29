@@ -14,29 +14,21 @@ import java.util.Scanner;
 import static java.lang.Math.min;
 
 public class Mitri {
-    String botName;
-    String logo;
-    Ui ui;
-    ArrayList<Task> taskList;
-    File saveFile;
+    private String botName;
+    private String logo;
+    private Ui ui;
+    private ArrayList<Task> taskList;
+    private Storage storage;
 
     public Mitri() {
         this.botName = "Mitri";
         ui = new Ui();
         taskList = new ArrayList<Task>(100);
-        saveFile = new File("data/mitri.txt");
-        try {
-            if (!saveFile.exists()) {
-                Files.createDirectories(Paths.get("data"));
-                saveFile.createNewFile();
-            }
-        }catch (IOException e){
-            ui.printError(e.getMessage());
-        }
+        storage = new Storage(this, ui, taskList);
     }
 
     public void run() {
-        loadFromFile();
+        storage.loadFromFile();
         greet();
         int running = 1;
         while (running == 1) {
@@ -46,17 +38,6 @@ public class Mitri {
         exit();
     }
 
-    public void loadFromFile() {
-        try{
-            Scanner fileScanner = new Scanner(saveFile);
-            while (fileScanner.hasNextLine()) {
-                taskList.add(readTask(fileScanner.nextLine()));
-            }
-            fileScanner.close();
-        } catch (FileNotFoundException e) {
-            //Do nothing
-        }
-    }
 
     public Task readTask(String input) {
         String[] parts = input.split(" \\| ");
@@ -80,19 +61,7 @@ public class Mitri {
         return t;
     }
 
-    public void writeToFile() {
-        try {
-            FileWriter fileWriter = new FileWriter(saveFile);
-            StringBuilder writeStr = new StringBuilder();
-            for (Task task : taskList) {
-                writeStr.append(task.toSave()).append("\n");
-            }
-            fileWriter.write(writeStr.toString());
-            fileWriter.close();
-        } catch (IOException e) {
-            ui.printError("Could not save tasks to file. "+e.getMessage());
-        }
-    }
+
 
     private int processInput(String input) {
         String[] parts = input.split(" ");
@@ -237,7 +206,7 @@ public class Mitri {
 
     private void exit(){
         ui.closeScanner();
-        writeToFile();
+        storage.writeToFile();
         ui.print("Bye. Hope to see you again soon!");
     }
 
