@@ -11,6 +11,9 @@ import java.nio.file.Paths;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
+/**
+ * Storage class to deal with file IO.
+ */
 public class Storage {
 
     private File saveFile;
@@ -18,6 +21,13 @@ public class Storage {
     private TaskList taskList;
     private Parser parser;
 
+    /**
+     * Initialises storage object.
+     *
+     * @param parser Parser to parse commands read.
+     * @param ui Ui to display messages.
+     * @param taskList List to store tasks.
+     */
     public Storage(Parser parser, Ui ui, TaskList taskList) {
         saveFile = new File("data/mitri.txt");
         this.parser = parser;
@@ -33,6 +43,9 @@ public class Storage {
         }
     }
 
+    /**
+     * Saves tasks by retrieving from task list  and writing to file.
+     */
     public void writeToFile() {
         try {
             FileWriter fileWriter = new FileWriter(saveFile);
@@ -47,6 +60,9 @@ public class Storage {
         }
     }
 
+    /**
+     * Retrieves tasks from saved list and calls parser. Saves returned tasks into task list.
+     */
     public void loadFromFile() {
         try{
             Scanner fileScanner = new Scanner(saveFile);
