@@ -11,15 +11,32 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 
+/**
+ * Parser to retrieve commands from input and call relevant functions.
+ */
 public class Parser {
     private Mitri mitri;
     private Ui ui;
 
+    /**
+     * Initialise Parser
+     *
+     * @param mitri Chatbot
+     * @param ui Ui for printing error messages
+     */
     public Parser(Mitri mitri, Ui ui) {
         this.mitri = mitri;
         this.ui = ui;
     }
 
+    /**
+     * Given line from file, parses and returns task corresponding to given line.
+     *
+     * @param input String to parse into Task.
+     * @return Task parsed from input.
+     * @throws DateTimeParseException Thrown if DateTime field cannot be parsed properly.
+     * @throws IllegalArgumentException Thrown if line contains errors that show file is corrupted.
+     */
     public Task parseTaskFromFile(String input) throws DateTimeParseException, IllegalArgumentException{
         String[] parts = input.split(" \\| ");
         Task t;
@@ -43,6 +60,12 @@ public class Parser {
     }
 
 
+    /**
+     * Parses given command line input into its relevant command and executes it.
+     *
+     * @param input String with command to execute.
+     * @return 0 if bye received (exit), 1 to continue running chatbot.
+     */
     public int processInput(String input) {
         String[] parts = input.split(" ");
         if (input.equals("bye")) {
