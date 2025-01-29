@@ -29,4 +29,12 @@ public abstract class Task {
     public String toSave(){
         return (isDone ? "1" : "0") + " | " + description;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Task task) {
+            return this.toString().equals(task.toString());
+        }
+        return false;
+    }
 }
