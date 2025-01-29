@@ -20,7 +20,7 @@ public class Parser {
         this.ui = ui;
     }
 
-    public Task parseTaskFromFile(String input) {
+    public Task parseTaskFromFile(String input) throws DateTimeParseException, IllegalArgumentException{
         String[] parts = input.split(" \\| ");
         Task t;
         switch (parts[0]) {

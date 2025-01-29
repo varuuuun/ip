@@ -8,7 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 public class Storage {
@@ -56,6 +56,10 @@ public class Storage {
             fileScanner.close();
         } catch (FileNotFoundException e) {
             //Do nothing - should not reach this section
+        } catch (DateTimeParseException e) {
+            ui.printError("Date/time in wrong format. File may be corrupted.");
+        } catch (IllegalArgumentException e) {
+            ui.printError("File is corrupted.");
         }
     }
 
