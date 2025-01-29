@@ -1,30 +1,21 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
 import static java.lang.Math.min;
 
 public class Mitri {
     private String botName;
     private String logo;
     private Ui ui;
-    private ArrayList<Task> taskList;
+    private TaskList taskList;
     private Storage storage;
     private Parser parser;
 
     public Mitri() {
         this.botName = "Mitri";
         ui = new Ui();
-        taskList = new ArrayList<Task>(100);
+        taskList = new TaskList();
         parser = new Parser(this, ui);
         storage = new Storage(parser, ui, taskList);
     }
@@ -39,9 +30,6 @@ public class Mitri {
         }
         exit();
     }
-
-
-
 
     private void echo(String str){
         ui.print(str);
@@ -121,11 +109,8 @@ public class Mitri {
     }
 
     public void list(){
-        StringBuilder printString = new StringBuilder("Here are the tasks in your list:");
-        for (int i = 0; i < taskList.size(); i++) {
-            printString.append("\n\t").append(i + 1).append(". ").append(taskList.get(i));
-        }
-        ui.print(printString.toString());
+        String printString = "Here are the tasks in your list:" + taskList.toString();
+        ui.print(printString);
     }
 
     private void greet(){
@@ -137,7 +122,5 @@ public class Mitri {
         storage.writeToFile();
         ui.print("Bye. Hope to see you again soon!");
     }
-
-
 
 }

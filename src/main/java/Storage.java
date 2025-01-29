@@ -11,10 +11,10 @@ public class Storage {
 
     private File saveFile;
     private Ui ui;
-    private ArrayList<Task> taskList;
+    private TaskList taskList;
     private Parser parser;
 
-    public Storage(Parser parser, Ui ui, ArrayList<Task> taskList) {
+    public Storage(Parser parser, Ui ui, TaskList taskList) {
         saveFile = new File("data/mitri.txt");
         this.parser = parser;
         this.ui = ui;
@@ -33,8 +33,8 @@ public class Storage {
         try {
             FileWriter fileWriter = new FileWriter(saveFile);
             StringBuilder writeStr = new StringBuilder();
-            for (Task task : taskList) {
-                writeStr.append(task.toSave()).append("\n");
+            for (int i =0; i < taskList.size(); i++) {
+                writeStr.append(taskList.get(i).toSave()).append("\n");
             }
             fileWriter.write(writeStr.toString());
             fileWriter.close();
