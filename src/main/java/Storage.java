@@ -12,11 +12,11 @@ public class Storage {
     private File saveFile;
     private Ui ui;
     private ArrayList<Task> taskList;
-    private Mitri mitri;
+    private Parser parser;
 
-    public Storage(Mitri mitri, Ui ui, ArrayList<Task> taskList) {
+    public Storage(Parser parser, Ui ui, ArrayList<Task> taskList) {
         saveFile = new File("data/mitri.txt");
-        this.mitri = mitri;
+        this.parser = parser;
         this.ui = ui;
         this.taskList = taskList;
         try {
@@ -47,7 +47,7 @@ public class Storage {
         try{
             Scanner fileScanner = new Scanner(saveFile);
             while (fileScanner.hasNextLine()) {
-                taskList.add(mitri.readTask(fileScanner.nextLine()));
+                taskList.add(parser.parseTaskFromFile(fileScanner.nextLine()));
             }
             fileScanner.close();
         } catch (FileNotFoundException e) {
