@@ -1,7 +1,7 @@
 package mitri.util;
 
 /**
- * Enum class for all possible commands.
+ * Represents for all possible commands.
  */
 public enum Commands {
     LIST, BYE, MARK, UNMARK, TODO, DEADLINE, EVENT, DELETE;

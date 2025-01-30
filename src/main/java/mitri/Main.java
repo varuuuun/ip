@@ -3,12 +3,12 @@ package mitri;
 import mitri.chatbot.Mitri;
 
 /**
- * Main entry point for the application.
+ * Represents main entry point for the chatbot.
  */
 public class Main {
 
     /**
-     * The main method that runs the application.
+     * Runs the chatbot.
      *
      * @param args Command-line arguments (unnecessary).
      */

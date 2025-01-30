@@ -1,7 +1,8 @@
 package mitri.task;
 
 /**
- * Abstract class representing a Task object.
+ * Represents a Task object.
+ * Abstract class, cannot and should not be instantiated.
  */
 public abstract class Task {
     protected String description;
@@ -55,7 +56,7 @@ public abstract class Task {
     }
 
     /**
-     * Equality check with another object.
+     * Checks equality against another object.
      *
      * @param obj Object to compare with task object
      * @return True is task and objects are equal (all fields have the same value), false otherwise.

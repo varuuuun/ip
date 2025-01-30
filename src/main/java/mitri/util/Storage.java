@@ -12,7 +12,7 @@ import java.util.Scanner;
 import mitri.ui.Ui;
 
 /**
- * Storage class to deal with file IO.
+ * Represents Storage to deal with file IO.
  */
 public class Storage {
 

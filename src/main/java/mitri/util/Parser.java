@@ -12,14 +12,14 @@ import mitri.task.Todo;
 import mitri.ui.Ui;
 
 /**
- * Parser to retrieve commands from input and call relevant functions.
+ * Represents Parser to retrieve commands from input and call relevant functions.
  */
 public class Parser {
     private Mitri mitri;
     private Ui ui;
 
     /**
-     * Initialise Parser
+     * Initialises Parser
      *
      * @param mitri Chatbot
      * @param ui Ui for printing error messages
@@ -31,7 +31,7 @@ public class Parser {
 
 
     /**
-     * Given line from file, parses and returns task corresponding to given line.
+     * Parses and returns task corresponding to given line of file.
      *
      * @param input String to parse into Task.
      * @return Task parsed from input.

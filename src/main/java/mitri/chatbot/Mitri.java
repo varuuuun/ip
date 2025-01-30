@@ -57,7 +57,7 @@ public class Mitri {
     }
 
     /**
-     * Echo functionality originally used to test chatbot. Currently unused.
+     * Echoes input, originally used to test chatbot. Currently unused.
      *
      * @param str String to echo.
      */
@@ -145,7 +145,7 @@ public class Mitri {
     }
 
     /**
-     * Takes a string and parses it to a LocalDateTime object wherever possible.
+     * Parses input string into a LocalDateTime object wherever possible.
      *
      * @param str String to parse to LocalDateTime object.
      * @return LocalDateTime object created from given string.

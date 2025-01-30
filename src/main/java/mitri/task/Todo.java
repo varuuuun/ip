@@ -20,7 +20,7 @@ public class Todo extends Task {
      * @return String representation of task.
      */
     @Override
-    public String toString(){
+    public String toString() {
         return "[T]" + super.toString();
     }
 
