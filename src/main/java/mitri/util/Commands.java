@@ -4,7 +4,7 @@ package mitri.util;
  * Represents for all possible commands.
  */
 public enum Commands {
-    LIST, BYE, MARK, UNMARK, TODO, DEADLINE, EVENT, DELETE;
+    LIST, BYE, MARK, UNMARK, TODO, DEADLINE, EVENT, DELETE, FIND;
 
     /**
      * Gets command from given string.

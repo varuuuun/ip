@@ -68,4 +68,14 @@ public abstract class Task {
         }
         return false;
     }
+
+    /**
+     * Returns whether given string is a substring of Description field.
+     *
+     * @param string Substring to search in Description.
+     * @return True if Description contains substring, false otherwise.
+     */
+    public boolean doesDescriptionContain(String string) {
+        return description.contains(string);
+    }
 }

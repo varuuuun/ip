@@ -204,6 +204,17 @@ public class Mitri {
         ui.print(printString);
     }
 
+
+    /**
+     * Finds and returns a list of all tasks whose description contains the given string.
+     *
+     * @param str String to search in description of task.
+     */
+    public void find(String str) {
+        String printString = "Here are the matching tasks in your list:" + taskList.find(str).toString();
+        ui.print(printString);
+    }
+
     /**
      * Greets user.
      */
