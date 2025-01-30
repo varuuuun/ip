@@ -80,7 +80,9 @@ public class Parser {
                 case EVENT:
                     mitri.addEvent(input.substring(5));
                     break;
-
+                case FIND:
+                    mitri.find(parts[1]);
+                    break;
             }
         } catch (DateTimeParseException e){
             ui.printError("You did not provide a readable date/time");

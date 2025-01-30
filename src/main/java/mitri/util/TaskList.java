@@ -37,7 +37,21 @@ public class TaskList {
         return sb.toString();
     }
 
+    /**
+     * Returns list of tasks that contain substring in their description.
+     *
+     * @param string Substring to find in Task descriptions.
+     * @return TaskList object containing Tasks that contain the given substring in their description.
+     */
+    public TaskList find(String string) {
+        TaskList list = new TaskList();
+        for (int i = 0; i < taskList.size(); i++){
+            if (taskList.get(i).doesDescriptionContain(string)) {
+                list.add(taskList.get(i));
+            }
+        }
 
-
+        return list;
+    }
 
 }
