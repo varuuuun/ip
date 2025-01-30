@@ -72,6 +72,7 @@ public class Mitri {
      */
     public void delete(int index) {
         Task t = taskList.remove(index);
+        storage.writeToFile();
         ui.print("Got it. I've removed this task:\n\t" + t + "\nNow you have " + taskList.size()
                 + " tasks in the list.");
     }
@@ -168,6 +169,7 @@ public class Mitri {
      */
     public void add(Task t) {
         taskList.add(t);
+        storage.writeToFile();
         ui.print("Got it. I've added this task:\n\t" + t
                 + "\nNow you have " + taskList.size() + " tasks in the list.");
     }
@@ -181,6 +183,7 @@ public class Mitri {
     public void mark(int i) throws IndexOutOfBoundsException {
         Task t = taskList.get(i);
         t.setDone();
+        storage.writeToFile();
         ui.print("Nice! I've marked this task as done:\n\t" + t);
     }
 
@@ -193,6 +196,7 @@ public class Mitri {
     public void unmark(int i) throws IndexOutOfBoundsException {
         Task t = taskList.get(i);
         t.setNotDone();
+        storage.writeToFile();
         ui.print("OK, I've marked this task as not done yet:\n\t" + t);
     }
 
@@ -227,7 +231,6 @@ public class Mitri {
      */
     private void exit() {
         ui.closeScanner();
-        storage.writeToFile();
         ui.print("Bye. Hope to see you again soon!");
     }
 
