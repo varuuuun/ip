@@ -3,14 +3,14 @@ package mitri.task;
 /**
  * Represents the Todo task.
  */
-public class Todo extends Task{
+public class Todo extends Task {
 
     /**
      * Initialises Todo object.
      *
      * @param description Description of Todo task.
      */
-    public Todo(String description){
+    public Todo(String description) {
         super(description);
     }
 
@@ -30,7 +30,7 @@ public class Todo extends Task{
      * @return String representation of task.
      */
     @Override
-    public String toSave(){
+    public String toSave() {
         return "T | " + super.toSave();
     }
 }

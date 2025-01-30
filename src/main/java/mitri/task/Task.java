@@ -50,7 +50,7 @@ public abstract class Task {
      *
      * @return String representation of task.
      */
-    public String toSave(){
+    public String toSave() {
         return (isDone ? "1" : "0") + " | " + description;
     }
 

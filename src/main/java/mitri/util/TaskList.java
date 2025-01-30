@@ -1,21 +1,20 @@
 package mitri.util;
 
+import java.util.ArrayList;
 
 import mitri.task.Task;
-
-import java.util.ArrayList;
 
 /**
  * Represents Task list.
  */
 public class TaskList {
-    private ArrayList<Task> taskList;
+    private ArrayList<Task> tasks;
 
     /**
      * Initialises task list.
      */
     public TaskList() {
-        taskList = new ArrayList<Task>(100);
+        tasks = new ArrayList<Task>(100);
     }
 
     /**
@@ -24,8 +23,8 @@ public class TaskList {
      * @param index Index of task to remove.
      * @return Removed task.
      */
-    public Task remove(int index){
-        return taskList.remove(index);
+    public Task remove(int index) {
+        return tasks.remove(index);
     }
 
     /**
@@ -33,8 +32,8 @@ public class TaskList {
      *
      * @return Size of list.
      */
-    public int size(){
-        return taskList.size();
+    public int size() {
+        return tasks.size();
     }
 
     /**
@@ -42,8 +41,8 @@ public class TaskList {
      *
      * @param task Task to add to list.
      */
-    public void add(Task task){
-        taskList.add(task);
+    public void add(Task task) {
+        tasks.add(task);
     }
 
     /**
@@ -52,8 +51,8 @@ public class TaskList {
      * @param index Index of task to return.
      * @return Task at specified index.
      */
-    public Task get(int index){
-        return taskList.get(index);
+    public Task get(int index) {
+        return tasks.get(index);
     }
 
     /**
@@ -64,9 +63,11 @@ public class TaskList {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < taskList.size(); i++) {
-            sb.append("\n\t").append(i + 1).append(". ").append(taskList.get(i));
+
+        for (int i = 0; i < tasks.size(); i++) {
+            sb.append("\n\t").append(i + 1).append(". ").append(tasks.get(i));
         }
+
         return sb.toString();
     }
 

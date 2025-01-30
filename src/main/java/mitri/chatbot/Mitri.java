@@ -1,5 +1,12 @@
 package mitri.chatbot;
 
+import static java.lang.Math.min;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
+
 import mitri.task.Deadline;
 import mitri.task.Event;
 import mitri.task.Task;
@@ -9,11 +16,6 @@ import mitri.util.Parser;
 import mitri.util.Storage;
 import mitri.util.TaskList;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeParseException;
-import static java.lang.Math.min;
 
 /**
  * Represents the chatbot Mitri, handling user interaction and functionality.
@@ -45,10 +47,12 @@ public class Mitri {
         storage.loadFromFile();
         greet();
         int running = 1;
+
         while (running == 1) {
             String input = ui.getInput();
             running = parser.processInput(input);
         }
+
         exit();
     }
 
@@ -57,7 +61,7 @@ public class Mitri {
      *
      * @param str String to echo.
      */
-    private void echo(String str){
+    private void echo(String str) {
         ui.print(str);
     }
 
@@ -66,9 +70,10 @@ public class Mitri {
      *
      * @param index of item to delete from task list.
      */
-    public void delete(int index){
+    public void delete(int index) {
         Task t = taskList.remove(index);
-        ui.print("Got it. I've removed this task:\n\t" + t + "\nNow you have " + taskList.size() + " tasks in the list.");
+        ui.print("Got it. I've removed this task:\n\t" + t + "\nNow you have " + taskList.size()
+                + " tasks in the list.");
     }
 
     /**
@@ -77,10 +82,11 @@ public class Mitri {
      * @param str String containing "description" field of Todo task.
      * @throws IllegalArgumentException Thrown when str is blank.
      */
-    public void addTodo(String str) throws IllegalArgumentException{
-        if (str.isBlank()){
+    public void addTodo(String str) throws IllegalArgumentException {
+        if (str.isBlank()) {
             throw new IllegalArgumentException("The description of a todo cannot be empty.");
         }
+
         add(new Todo(str.stripLeading()));
     }
 
@@ -93,9 +99,12 @@ public class Mitri {
      */
     public void addDeadline(String str) throws IllegalArgumentException, DateTimeParseException {
         String[] parts = str.split(" /by ");
-        if (parts[0].isBlank() || parts.length == 1 || parts[1].isBlank()){
-            throw new IllegalArgumentException("Deadline missing one or more fields. \nEnsure you provide description and by fields.");
+
+        if (parts[0].isBlank() || parts.length == 1 || parts[1].isBlank()) {
+            throw new IllegalArgumentException("Deadline missing one or more fields. \n"
+                    + "Ensure you provide description and by fields.");
         }
+
         add(new Deadline(parts[0].stripLeading(), extractDateTime(parts[1])));
     }
 
@@ -107,27 +116,29 @@ public class Mitri {
      * @throws IllegalArgumentException Thrown when one or more of the required fields are blank.
      * @throws DateTimeParseException Thrown when "from" or "to" fields cannot be parsed as LocalDateTime objects.
      */
-    public void addEvent(String str) throws IllegalArgumentException, DateTimeParseException{
+    public void addEvent(String str) throws IllegalArgumentException, DateTimeParseException {
         int from = str.indexOf(" /from ");
         int to = str.indexOf(" /to ");
 
         if ((from <= 0) || (to <= 0)) {
-            throw new IllegalArgumentException("Event missing one or more fields. \nEnsure you provide description, from and to fields.");
+            throw new IllegalArgumentException("Event missing one or more fields. \n"
+                    + "Ensure you provide description, from and to fields.");
         }
 
-        String descStr = str.substring(0,min(from, to));
+        String descStr = str.substring(0, min(from, to));
         String fromStr, toStr;
 
-        if (from < to){
-            fromStr = str.substring(from+7,to);
-            toStr = str.substring(to+5);
+        if (from < to) {
+            fromStr = str.substring(from + 7, to);
+            toStr = str.substring(to + 5);
         } else {
-            fromStr = str.substring(from+7);
-            toStr = str.substring(to+5, from);
+            fromStr = str.substring(from + 7);
+            toStr = str.substring(to + 5, from);
         }
 
         if (descStr.isBlank() || fromStr.isBlank() || toStr.isBlank()) {
-            throw new IllegalArgumentException("Event has one or more empty fields. Ensure you provide description, from and to fields.");
+            throw new IllegalArgumentException("Event has one or more empty fields. "
+                    + "Ensure you provide description, from and to fields.");
         }
 
         add(new Event(descStr.stripLeading(), extractDateTime(fromStr), extractDateTime(toStr)));
@@ -141,9 +152,9 @@ public class Mitri {
      * @throws DateTimeParseException Thrown when string cannot be parsed into a LocalDateTime object.
      */
     private LocalDateTime extractDateTime(String str) throws DateTimeParseException {
-        if (str.indexOf('T')>0){
+        if (str.indexOf('T') > 0) {
             return LocalDateTime.parse(str);
-        } else if (str.indexOf('-')>0) {
+        } else if (str.indexOf('-') > 0) {
             return LocalDate.parse(str).atStartOfDay();
         } else {
             return LocalDateTime.of(LocalDate.now(), LocalTime.parse(str));
@@ -155,9 +166,10 @@ public class Mitri {
      *
      * @param t Task to add to list.
      */
-    public void add(Task t){
+    public void add(Task t) {
         taskList.add(t);
-        ui.print("Got it. I've added this task:\n\t" + t + "\nNow you have " + taskList.size() + " tasks in the list.");
+        ui.print("Got it. I've added this task:\n\t" + t
+                + "\nNow you have " + taskList.size() + " tasks in the list.");
     }
 
     /**
@@ -187,7 +199,7 @@ public class Mitri {
     /**
      * Lists all tasks in task list.
      */
-    public void list(){
+    public void list() {
         String printString = "Here are the tasks in your list:" + taskList.toString();
         ui.print(printString);
     }
@@ -195,14 +207,14 @@ public class Mitri {
     /**
      * Greets user.
      */
-    private void greet(){
+    private void greet() {
         ui.print("Hello! I'm " + botName + "\n" + "What can I do for you?");
     }
 
     /**
      * Cleans up and exits.
      */
-    private void exit(){
+    private void exit() {
         ui.closeScanner();
         storage.writeToFile();
         ui.print("Bye. Hope to see you again soon!");
