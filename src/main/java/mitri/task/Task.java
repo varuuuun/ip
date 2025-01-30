@@ -26,7 +26,7 @@ public abstract class Task {
         return "[" + getStatusIcon() + "] " + description;
     }
 
-    public String toSave(){
+    public String toSave() {
         return (isDone ? "1" : "0") + " | " + description;
     }
 

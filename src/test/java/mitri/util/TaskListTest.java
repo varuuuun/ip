@@ -1,9 +1,10 @@
 package mitri.util;
 
-import mitri.task.Todo;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import mitri.task.Todo;
 
 public class TaskListTest {
     @Test
@@ -18,7 +19,7 @@ public class TaskListTest {
     @Test
     public void removeTest_tooLargeIndex_exceptionThrown() {
         TaskList list = new TaskList();
-        assertThrows(IndexOutOfBoundsException.class, ()->list.remove(1));
+        assertThrows(IndexOutOfBoundsException.class, () -> list.remove(1));
     }
 
     @Test
@@ -26,7 +27,7 @@ public class TaskListTest {
         TaskList list = new TaskList();
         list.add(new Todo("hello"));
         list.add(new Todo("hi"));
-        assertThrows(IndexOutOfBoundsException.class, ()-> list.remove(-1));
+        assertThrows(IndexOutOfBoundsException.class, () -> list.remove(-1));
     }
 
 }

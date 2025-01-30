@@ -1,23 +1,26 @@
 package mitri.util;
 
-import mitri.task.Deadline;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+import mitri.task.Deadline;
 
 public class ParserTest {
     @Test
-    public void parseTaskFromFile_normalInputNotDone_equals(){
+    public void parseTaskFromFile_normalInputNotDone_equals() {
         Parser p = new Parser(null, null);
         Deadline d = new Deadline("test", LocalDateTime.parse("2002-05-05T08:00:00"));
         assertEquals(d, p.parseTaskFromFile("D | 0 | test | 2002-05-05T08:00:00"));
     }
 
     @Test
-    public void parseTaskFromFile_normalInputDone_equals(){
+    public void parseTaskFromFile_normalInputDone_equals() {
         Parser p = new Parser(null, null);
         Deadline d = new Deadline("test", LocalDateTime.parse("2002-05-05T08:00:00"));
         d.setDone();

@@ -3,11 +3,11 @@ package mitri.task;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Event extends Task{
+public class Event extends Task {
     protected LocalDateTime from, to;
     protected DateTimeFormatter formatter;
 
-    public Event(String description, LocalDateTime from, LocalDateTime to){
+    public Event(String description, LocalDateTime from, LocalDateTime to) {
         super(description);
         this.from = from;
         this.to = to;
@@ -15,12 +15,12 @@ public class Event extends Task{
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "[E]" + super.toString() + " (from: " + from.format(formatter) + " to: " + to.format(formatter) + ")";
     }
 
     @Override
-    public String toSave(){
+    public String toSave() {
         return "E | " + super.toSave() + " | " + from.toString() + " | " + to.toString();
     }
 }
