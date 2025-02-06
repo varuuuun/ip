@@ -7,11 +7,15 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 
+import javafx.application.Application;
+import javafx.stage.Stage;
+
 import mitri.task.Deadline;
 import mitri.task.Event;
 import mitri.task.Task;
 import mitri.task.Todo;
 import mitri.ui.Ui;
+import mitri.ui.Gui;
 import mitri.util.Parser;
 import mitri.util.Storage;
 import mitri.util.TaskList;
@@ -20,10 +24,10 @@ import mitri.util.TaskList;
 /**
  * Represents the chatbot Mitri, handling user interaction and functionality.
  */
-public class Mitri {
+public class Mitri extends Application {
     private String botName;
     private String logo;
-    private Ui ui;
+    private Gui ui;
     private TaskList taskList;
     private Storage storage;
     private Parser parser;
@@ -34,10 +38,32 @@ public class Mitri {
      */
     public Mitri() {
         this.botName = "Mitri";
-        ui = new Ui();
         taskList = new TaskList();
-        parser = new Parser(this, ui);
-        storage = new Storage(parser, ui, taskList);
+        parser = new Parser(this);
+        storage = new Storage(parser, this, taskList);
+        ui = new Gui(parser);
+    }
+
+    public void start(Stage stage){
+        try {
+            javafx.fxml.FXMLLoader fxmlLoader = new javafx.fxml.FXMLLoader(Mitri.class.getResource("/view/Gui.fxml"));
+            javafx.scene.layout.AnchorPane ap = fxmlLoader.load();
+            javafx.scene.Scene scene = new javafx.scene.Scene(ap);
+            stage.setScene(scene);
+            fxmlLoader.<Gui>getController().setParser(parser);  // inject the Duke instance
+            stage.show();
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+        }
+        storage.loadFromFile();
+    }
+
+    public void showOutput(String str){
+        ui.displayOutput(str);
+    }
+
+    public String showError(String str){
+        return ui.getError(str);
     }
 
     /**
@@ -46,14 +72,11 @@ public class Mitri {
     public void run() {
         storage.loadFromFile();
         greet();
-        int running = 1;
 
-        while (running == 1) {
+        while (true) {
             String input = ui.getInput();
-            running = parser.processInput(input);
+            parser.processInput(input);
         }
-
-        exit();
     }
 
     /**
@@ -62,43 +85,46 @@ public class Mitri {
      * @param str String to echo.
      */
     private void echo(String str) {
-        ui.print(str);
+        ui.displayOutput(str);
     }
 
     /**
      * Deletes item at given index & reports to user.
      *
      * @param index of item to delete from task list.
+     * @return String to output to user.
      */
-    public void delete(int index) {
+    public String delete(int index) {
         Task t = taskList.remove(index);
         storage.writeToFile();
-        ui.print("Got it. I've removed this task:\n\t" + t + "\nNow you have " + taskList.size()
-                + " tasks in the list.");
+        return "Got it. I've removed this task:\n\t" + t + "\nNow you have " + taskList.size()
+                + " tasks in the list.";
     }
 
     /**
      * Creates new Todo task and calls function to add it to task list.
      *
      * @param str String containing "description" field of Todo task.
+     * @return String to output to user.
      * @throws IllegalArgumentException Thrown when str is blank.
      */
-    public void addTodo(String str) throws IllegalArgumentException {
+    public String addTodo(String str) throws IllegalArgumentException {
         if (str.isBlank()) {
             throw new IllegalArgumentException("The description of a todo cannot be empty.");
         }
 
-        add(new Todo(str.stripLeading()));
+        return add(new Todo(str.stripLeading()));
     }
 
     /**
      * Creates new Deadline task and calls function to add it to task list.
      *
      * @param str String containing "description"and "by" fields of Deadline task.
+     * @return String to output to user.
      * @throws IllegalArgumentException Thrown when "description" or "by" field is blank.
      * @throws DateTimeParseException Thrown when "by" field cannot be parsed as a LocalDateTime object.
      */
-    public void addDeadline(String str) throws IllegalArgumentException, DateTimeParseException {
+    public String addDeadline(String str) throws IllegalArgumentException, DateTimeParseException {
         String[] parts = str.split(" /by ");
 
         if (parts[0].isBlank() || parts.length == 1 || parts[1].isBlank()) {
@@ -106,7 +132,7 @@ public class Mitri {
                     + "Ensure you provide description and by fields.");
         }
 
-        add(new Deadline(parts[0].stripLeading(), extractDateTime(parts[1])));
+        return add(new Deadline(parts[0].stripLeading(), extractDateTime(parts[1])));
     }
 
     /**
@@ -114,10 +140,11 @@ public class Mitri {
      * "from" and "to" fields can be in any orer.
      *
      * @param str String containing "description", "from" and "to" fields of Event task.
+     * @return String to output to user.
      * @throws IllegalArgumentException Thrown when one or more of the required fields are blank.
      * @throws DateTimeParseException Thrown when "from" or "to" fields cannot be parsed as LocalDateTime objects.
      */
-    public void addEvent(String str) throws IllegalArgumentException, DateTimeParseException {
+    public String addEvent(String str) throws IllegalArgumentException, DateTimeParseException {
         int from = str.indexOf(" /from ");
         int to = str.indexOf(" /to ");
 
@@ -142,7 +169,7 @@ public class Mitri {
                     + "Ensure you provide description, from and to fields.");
         }
 
-        add(new Event(descStr.stripLeading(), extractDateTime(fromStr), extractDateTime(toStr)));
+        return add(new Event(descStr.stripLeading(), extractDateTime(fromStr), extractDateTime(toStr)));
     }
 
     /**
@@ -166,46 +193,49 @@ public class Mitri {
      * Adds given task to task list.
      *
      * @param t Task to add to list.
+     * @return String to output to user.
      */
-    public void add(Task t) {
+    public String add(Task t) {
         taskList.add(t);
         storage.writeToFile();
-        ui.print("Got it. I've added this task:\n\t" + t
-                + "\nNow you have " + taskList.size() + " tasks in the list.");
+        return "Got it. I've added this task:\n\t" + t
+                + "\nNow you have " + taskList.size() + " tasks in the list.";
     }
 
     /**
      * Marks given task as done.
      *
      * @param i Index of task to mark as done.
+     * @return String to output to user.
      * @throws IndexOutOfBoundsException Thrown when given index is out of the range of the task list.
      */
-    public void mark(int i) throws IndexOutOfBoundsException {
+    public String mark(int i) throws IndexOutOfBoundsException {
         Task t = taskList.get(i);
         t.setDone();
         storage.writeToFile();
-        ui.print("Nice! I've marked this task as done:\n\t" + t);
+        return "Nice! I've marked this task as done:\n\t" + t;
     }
 
     /**
      * Marks given task as not done.
      *
      * @param i Index of task to mark as not done.
+     * @return String to output to user.
      * @throws IndexOutOfBoundsException Thrown when given index is out of the range of the task list.
      */
-    public void unmark(int i) throws IndexOutOfBoundsException {
+    public String unmark(int i) throws IndexOutOfBoundsException {
         Task t = taskList.get(i);
         t.setNotDone();
         storage.writeToFile();
-        ui.print("OK, I've marked this task as not done yet:\n\t" + t);
+        return "OK, I've marked this task as not done yet:\n\t" + t;
     }
 
     /**
      * Lists all tasks in task list.
+     * @return String to output to user.
      */
-    public void list() {
-        String printString = "Here are the tasks in your list:" + taskList.toString();
-        ui.print(printString);
+    public String list() {
+        return "Here are the tasks in your list:" + taskList.toString();
     }
 
 
@@ -213,25 +243,26 @@ public class Mitri {
      * Finds and returns a list of all tasks whose description contains the given string.
      *
      * @param str String to search in description of task.
+     * @return String to output to user.
      */
-    public void find(String str) {
-        String printString = "Here are the matching tasks in your list:" + taskList.find(str).toString();
-        ui.print(printString);
+    public String find(String str) {
+        return "Here are the matching tasks in your list:" + taskList.find(str).toString();
     }
 
     /**
      * Greets user.
      */
     private void greet() {
-        ui.print("Hello! I'm " + botName + "\n" + "What can I do for you?");
+        ui.displayOutput("Hello! I'm " + botName + "\n" + "What can I do for you?");
     }
 
     /**
      * Cleans up and exits.
      */
-    private void exit() {
+    public String exit() {
         ui.closeScanner();
-        ui.print("Bye. Hope to see you again soon!");
+        System.exit(0);
+        return "Bye. Hope to see you again soon!";
     }
 
 }

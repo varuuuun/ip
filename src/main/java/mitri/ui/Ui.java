@@ -36,7 +36,7 @@ public class Ui {
      *
      * @param str String to print.
      */
-    public void print(String str) {
+    public void displayOutput(String str) {
         System.out.println("____________________________________________________________");
         System.out.println(str);
         System.out.println("____________________________________________________________");
@@ -47,7 +47,7 @@ public class Ui {
      *
      * @param str Error Message to print.
      */
-    public void printError(String str) {
+    public void displayError(String str) {
         System.out.println("____________________________________________________________");
         System.out.println("Error: " + str);
         System.out.println("____________________________________________________________");

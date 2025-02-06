@@ -9,7 +9,7 @@ import java.nio.file.Paths;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
-import mitri.ui.Ui;
+import mitri.chatbot.Mitri;
 
 /**
  * Represents Storage to deal with file IO.
@@ -17,7 +17,7 @@ import mitri.ui.Ui;
 public class Storage {
 
     private File saveFile;
-    private Ui ui;
+    private Mitri mitri;
     private TaskList taskList;
     private Parser parser;
 
@@ -25,13 +25,13 @@ public class Storage {
      * Initialises storage object.
      *
      * @param parser Parser to parse commands read.
-     * @param ui Ui to display messages.
+     * @param mitri Chatbot class to display messages.
      * @param taskList List to store tasks.
      */
-    public Storage(Parser parser, Ui ui, TaskList taskList) {
+    public Storage(Parser parser, Mitri mitri, TaskList taskList) {
         saveFile = new File("data/mitri.txt");
         this.parser = parser;
-        this.ui = ui;
+        this.mitri = mitri;
         this.taskList = taskList;
 
         try {
@@ -40,7 +40,7 @@ public class Storage {
                 saveFile.createNewFile();
             }
         } catch (IOException e) {
-            ui.printError(e.getMessage());
+            mitri.showError(e.getMessage());
         }
     }
 
@@ -59,7 +59,7 @@ public class Storage {
             fileWriter.write(writeStr.toString());
             fileWriter.close();
         } catch (IOException e) {
-            ui.printError("Could not save tasks to file. " + e.getMessage());
+            mitri.showError("Could not save tasks to file. " + e.getMessage());
         }
     }
 
@@ -78,9 +78,9 @@ public class Storage {
         } catch (FileNotFoundException e) {
             //Do nothing - should not reach this section
         } catch (DateTimeParseException e) {
-            ui.printError("Date/time in wrong format. File may be corrupted.");
+            mitri.showError("Date/time in wrong format. File may be corrupted.");
         } catch (IllegalArgumentException e) {
-            ui.printError("File is corrupted.");
+            mitri.showError("File is corrupted.");
         }
     }
 

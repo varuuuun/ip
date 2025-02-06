@@ -16,17 +16,14 @@ import mitri.ui.Ui;
  */
 public class Parser {
     private Mitri mitri;
-    private Ui ui;
 
     /**
      * Initialises Parser
      *
      * @param mitri Chatbot
-     * @param ui Ui for printing error messages
      */
-    public Parser(Mitri mitri, Ui ui) {
+    public Parser(Mitri mitri) {
         this.mitri = mitri;
-        this.ui = ui;
     }
 
 
@@ -70,63 +67,50 @@ public class Parser {
      * Parses given command line input into its relevant command and executes it.
      *
      * @param input String with command to execute.
-     * @return 0 if bye received (exit), 1 to continue running chatbot.
+     * @return String to output to user.
      */
-    public int processInput(String input) {
+    public String processInput(String input) {
         String[] parts = input.split(" ");
-
-        if (input.equals("bye")) {
-            return 0;
-        }
 
         Commands command;
         try {
             command = Commands.getCommand(parts[0]);
         } catch (IllegalArgumentException e) {
-            ui.printError("I'm sorry, but I don't know what that means :(");
-            return 1;
+            command = Commands.DEFAULT;
         }
 
         try {
             switch (command) {
             case LIST:
-                mitri.list();
-                break;
+                return mitri.list();
             case BYE:
-                return 0;
+                return mitri.exit();
             case DELETE:
-                mitri.delete(Integer.parseInt(parts[1]) - 1);
-                break;
+                return mitri.delete(Integer.parseInt(parts[1]) - 1);
             case MARK:
-                mitri.mark(Integer.parseInt(parts[1]) - 1);
-                break;
+                return mitri.mark(Integer.parseInt(parts[1]) - 1);
             case UNMARK:
-                mitri.unmark(Integer.parseInt(parts[1]) - 1);
-                break;
+                return mitri.unmark(Integer.parseInt(parts[1]) - 1);
             case TODO:
-                mitri.addTodo(input.substring(4));
-                break;
+                return mitri.addTodo(input.substring(4));
             case DEADLINE:
-                mitri.addDeadline(input.substring(8));
-                break;
+                return mitri.addDeadline(input.substring(8));
             case EVENT:
-                mitri.addEvent(input.substring(5));
-                break;
+                return mitri.addEvent(input.substring(5));
             case FIND:
-                mitri.find(parts[1]);
-                break;
+                return mitri.find(parts[1]);
+            default:
+                return mitri.showError("I'm sorry, but I don't know what that means :(");
             }
         } catch (DateTimeParseException e) {
-            ui.printError("You did not provide a readable date/time");
+            return mitri.showError("You did not provide a readable date/time");
         } catch (NumberFormatException e) {
-            ui.printError("Not a number. Please give the index of the task!");
+            return mitri.showError("Not a number. Please give the index of the task!");
         } catch (IndexOutOfBoundsException e) {
-            ui.printError("Index out of bounds. Please give the correct index!");
-        } catch (IllegalArgumentException e) {
-            ui.printError(e.getMessage());
+            return mitri.showError("Index out of bounds. Please give the correct index!");
+        } catch (IllegalArgumentException error) {
+            return mitri.showError(error.getMessage());
         }
-
-        return 1;
     }
 
 
