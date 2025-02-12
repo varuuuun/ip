@@ -9,7 +9,6 @@ import mitri.task.Deadline;
 import mitri.task.Event;
 import mitri.task.Task;
 import mitri.task.Todo;
-import mitri.ui.Ui;
 
 /**
  * Represents Parser to retrieve commands from input and call relevant functions.
@@ -48,15 +47,19 @@ public class Parser {
             task = new Event(String.join(" | ", Arrays.copyOfRange(parts, 2, parts.length - 2)),
                     LocalDateTime.parse(parts[parts.length - 2]), LocalDateTime.parse(parts[parts.length - 1]));
             break;
-        default:
+        case "T":
             task = new Todo(String.join(" | ", Arrays.copyOfRange(parts, 2, parts.length)));
             break;
+        default:
+            throw new IllegalArgumentException("Invalid task content");
         }
 
         if (parts[1].equals("1")) {
             task.setDone();
-        } else {
+        } else if (parts[1].equals("0")) {
             task.setNotDone();
+        } else {
+            throw new IllegalArgumentException("Invalid completion value format");
         }
 
         return task;

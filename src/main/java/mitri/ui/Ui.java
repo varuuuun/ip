@@ -44,6 +44,7 @@ public class Ui {
 
     /**
      * Formats and prints given Error message.
+     * Currently unused, but will be used when chatbot is used as a CLI agent.
      *
      * @param str Error Message to print.
      */
