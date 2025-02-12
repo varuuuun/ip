@@ -45,6 +45,7 @@ public class Gui extends Ui {
 
     @FXML
     private void handleUserInput() {
+        assert parser != null : "Parser should not be null before processing input";
         String userText = userInput.getText();
         dialogContainer.getChildren().addAll(
                 mitri.ui.DialogBox.getUserDialog(userText, userImage)

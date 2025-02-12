@@ -73,6 +73,8 @@ public class Parser {
      * @return String to output to user.
      */
     public String processInput(String input) {
+        assert input != null : "Input string for parsing should not be null";
+        assert !input.trim().isBlank() : "Input string for parsing should not be empty";
         String[] parts = input.split(" ");
 
         Commands command;
