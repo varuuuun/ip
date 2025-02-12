@@ -14,7 +14,6 @@ import mitri.task.Deadline;
 import mitri.task.Event;
 import mitri.task.Task;
 import mitri.task.Todo;
-import mitri.ui.Ui;
 import mitri.ui.Gui;
 import mitri.util.Parser;
 import mitri.util.Storage;
@@ -26,7 +25,6 @@ import mitri.util.TaskList;
  */
 public class Mitri extends Application {
     private String botName;
-    private String logo;
     private Gui ui;
     private TaskList taskList;
     private Storage storage;
@@ -58,10 +56,6 @@ public class Mitri extends Application {
         storage.loadFromFile();
     }
 
-    public void showOutput(String str){
-        ui.displayOutput(str);
-    }
-
     public String showError(String str){
         return ui.getError(str);
     }
@@ -80,15 +74,6 @@ public class Mitri extends Application {
     }
 
     /**
-     * Echoes input, originally used to test chatbot. Currently unused.
-     *
-     * @param str String to echo.
-     */
-    private void echo(String str) {
-        ui.displayOutput(str);
-    }
-
-    /**
      * Deletes item at given index & reports to user.
      *
      * @param index of item to delete from task list.
@@ -97,8 +82,7 @@ public class Mitri extends Application {
     public String delete(int index) {
         Task t = taskList.remove(index);
         storage.writeToFile();
-        return "Got it. I've removed this task:\n\t" + t + "\nNow you have " + taskList.size()
-                + " tasks in the list.";
+        return "Got it. I've removed this task:\n\t" + t + "\n" + getLengthString();
     }
 
     /**
@@ -154,15 +138,8 @@ public class Mitri extends Application {
         }
 
         String descStr = str.substring(0, min(from, to));
-        String fromStr, toStr;
-
-        if (from < to) {
-            fromStr = str.substring(from + 7, to);
-            toStr = str.substring(to + 5);
-        } else {
-            fromStr = str.substring(from + 7);
-            toStr = str.substring(to + 5, from);
-        }
+        String fromStr = extractFromString(str, from, to);
+        String toStr = extractToString(str, from, to);
 
         if (descStr.isBlank() || fromStr.isBlank() || toStr.isBlank()) {
             throw new IllegalArgumentException("Event has one or more empty fields. "
@@ -170,6 +147,22 @@ public class Mitri extends Application {
         }
 
         return add(new Event(descStr.stripLeading(), extractDateTime(fromStr), extractDateTime(toStr)));
+    }
+
+    private String extractFromString(String str, int from, int to) {
+        if (from < to) {
+            return str.substring(from + 7, to);
+        } else {
+            return str.substring(from + 7);
+        }
+    }
+
+    private String extractToString(String str, int from, int to) {
+        if (from < to) {
+            return str.substring(to + 5);
+        } else {
+            return str.substring(to + 5, from);
+        }
     }
 
     /**
@@ -184,8 +177,11 @@ public class Mitri extends Application {
             return LocalDateTime.parse(str);
         } else if (str.indexOf('-') > 0) {
             return LocalDate.parse(str).atStartOfDay();
-        } else {
+        } else if (str.indexOf(':') > 0) {
             return LocalDateTime.of(LocalDate.now(), LocalTime.parse(str));
+        }
+        else {
+            throw new DateTimeParseException("Invalid date format.", str, 0);
         }
     }
 
@@ -198,8 +194,11 @@ public class Mitri extends Application {
     public String add(Task t) {
         taskList.add(t);
         storage.writeToFile();
-        return "Got it. I've added this task:\n\t" + t
-                + "\nNow you have " + taskList.size() + " tasks in the list.";
+        return "Got it. I've added this task:\n\t" + t + "\n" + getLengthString();
+    }
+
+    private String getLengthString() {
+        return "Now you have " + taskList.size() + " tasks in the list.";
     }
 
     /**

@@ -1,17 +1,12 @@
 package mitri.ui;
 
-import java.io.IOException;
-
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.layout.AnchorPane;
 
 import mitri.util.Parser;
 
@@ -36,22 +31,6 @@ public class Gui extends Ui {
 
     public Gui(Parser parser) {
         this.parser = parser;
-    }
-
-    public void start(Stage stage){
-        //Setting up required components
-
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(Gui.class.getResource("/view/Gui.fxml"));
-            AnchorPane ap = fxmlLoader.load();
-            fxmlLoader.setController(this);
-            fxmlLoader.setRoot(this);
-            Scene scene = new Scene(ap);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public void setParser(Parser parser) {
