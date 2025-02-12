@@ -13,6 +13,8 @@ public enum Commands {
      * @return Command
      */
     public static Commands getCommand(String command) {
+        assert command != null: "Command string should be null";
+        assert !command.isBlank() : "Command string should not be empty";
         return Commands.valueOf(command.toUpperCase());
     }
 }
