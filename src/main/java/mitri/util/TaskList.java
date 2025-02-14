@@ -7,7 +7,7 @@ import mitri.task.Task;
 /**
  * Represents Task list.
  */
-public class TaskList {
+public class TaskList extends BasicTaskList {
     private ArrayList<Task> tasks;
 
     /**
@@ -34,6 +34,7 @@ public class TaskList {
      *
      * @return Size of list.
      */
+    @Override
     public int size() {
         return tasks.size();
     }
@@ -43,8 +44,13 @@ public class TaskList {
      *
      * @param task Task to add to list.
      */
+    @Override
     public void add(Task task) {
         tasks.add(task);
+    }
+
+    public void addAtIndex(Task task, int index) {
+        tasks.add(index, task);
     }
 
     /**
@@ -53,6 +59,7 @@ public class TaskList {
      * @param index Index of task to return.
      * @return Task at specified index.
      */
+    @Override
     public Task get(int index) {
         assert index >= 0 : "Index out of bounds in get operation";
         assert index < tasks.size() : "Index out of bounds in get operation";
@@ -90,6 +97,10 @@ public class TaskList {
         }
 
         return list;
+    }
+
+    public void undo(){
+
     }
 
 }
