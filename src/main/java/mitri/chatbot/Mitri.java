@@ -262,6 +262,29 @@ public class Mitri extends Application {
         storage.writeToHistoryFile();
     }
 
+    public String undo(){
+        String command = historyList.remove();
+        String[] partsOfCommand = command.split(" ");
+        String action = parser.parseUndo(partsOfCommand[0]);
+        switch (action) {
+        case "delete":
+            delete(taskList.size()-1);
+            break;
+        case "mark":
+            mark(Integer.parseInt(partsOfCommand[1]) - 1);
+            break;
+        case "unmark":
+            unmark(Integer.parseInt(partsOfCommand[1]) - 1);
+            break;
+        case "add":
+            Task toAdd = deletedTasksList.remove();
+            taskList.addAtIndex(toAdd, Integer.parseInt(partsOfCommand[1]) - 1);
+            break;
+        }
+        storage.writeToHistoryFile();
+        return "Last change has been reverted!";
+    }
+
     /**
      * Greets user.
      */
