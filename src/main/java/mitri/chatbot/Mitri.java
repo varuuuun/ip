@@ -18,6 +18,8 @@ import mitri.ui.Gui;
 import mitri.util.Parser;
 import mitri.util.Storage;
 import mitri.util.TaskList;
+import mitri.util.HistoryList;
+import mitri.util.DeletedTasksList;
 
 
 /**
@@ -27,6 +29,8 @@ public class Mitri extends Application {
     private String botName;
     private Gui ui;
     private TaskList taskList;
+    private DeletedTasksList deletedTasksList;
+    private HistoryList historyList;
     private Storage storage;
     private Parser parser;
 
@@ -37,8 +41,10 @@ public class Mitri extends Application {
     public Mitri() {
         this.botName = "Mitri";
         taskList = new TaskList();
+        deletedTasksList = new DeletedTasksList();
+        historyList = new HistoryList();
         parser = new Parser(this);
-        storage = new Storage(parser, this, taskList);
+        storage = new Storage(parser, this, taskList, deletedTasksList, historyList);
         ui = new Gui(parser);
     }
 
@@ -53,7 +59,9 @@ public class Mitri extends Application {
         } catch (java.io.IOException e) {
             e.printStackTrace();
         }
-        storage.loadFromFile();
+        storage.loadFromSaveFile();
+        storage.loadFromHistoryFile();
+        storage.loadFromDeletedTasksFile();
     }
 
     public String showError(String str){
@@ -64,7 +72,7 @@ public class Mitri extends Application {
      * Starts the chatbot and begins processing user commands.
      */
     public void run() {
-        storage.loadFromFile();
+        storage.loadFromSaveFile();
         greet();
 
         while (true) {
@@ -81,7 +89,8 @@ public class Mitri extends Application {
      */
     public String delete(int index) {
         Task t = taskList.remove(index);
-        storage.writeToFile();
+        storage.writeToSaveFile();
+        deletedTasksList.add(t);
         return "Got it. I've removed this task:\n\t" + t + "\n" + getLengthString();
     }
 
@@ -193,7 +202,7 @@ public class Mitri extends Application {
      */
     public String add(Task t) {
         taskList.add(t);
-        storage.writeToFile();
+        storage.writeToSaveFile();
         return "Got it. I've added this task:\n\t" + t + "\n" + getLengthString();
     }
 
@@ -211,7 +220,7 @@ public class Mitri extends Application {
     public String mark(int i) throws IndexOutOfBoundsException {
         Task t = taskList.get(i);
         t.setDone();
-        storage.writeToFile();
+        storage.writeToSaveFile();
         return "Nice! I've marked this task as done:\n\t" + t;
     }
 
@@ -225,7 +234,7 @@ public class Mitri extends Application {
     public String unmark(int i) throws IndexOutOfBoundsException {
         Task t = taskList.get(i);
         t.setNotDone();
-        storage.writeToFile();
+        storage.writeToSaveFile();
         return "OK, I've marked this task as not done yet:\n\t" + t;
     }
 
@@ -246,6 +255,11 @@ public class Mitri extends Application {
      */
     public String find(String str) {
         return "Here are the matching tasks in your list:" + taskList.find(str).toString();
+    }
+
+    public void writeHistory(String command) {
+        historyList.add(command);
+        storage.writeToHistoryFile();
     }
 
     /**
