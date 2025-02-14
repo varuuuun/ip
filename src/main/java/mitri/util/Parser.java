@@ -91,19 +91,27 @@ public class Parser {
             case BYE:
                 return mitri.exit();
             case DELETE:
+                mitri.writeHistory(input);
                 return mitri.delete(Integer.parseInt(parts[1]) - 1);
             case MARK:
+                mitri.writeHistory(input);
                 return mitri.mark(Integer.parseInt(parts[1]) - 1);
             case UNMARK:
+                mitri.writeHistory(input);
                 return mitri.unmark(Integer.parseInt(parts[1]) - 1);
             case TODO:
+                mitri.writeHistory(input);
                 return mitri.addTodo(input.substring(4));
             case DEADLINE:
+                mitri.writeHistory(input);
                 return mitri.addDeadline(input.substring(8));
             case EVENT:
+                mitri.writeHistory(input);
                 return mitri.addEvent(input.substring(5));
             case FIND:
                 return mitri.find(parts[1]);
+            case UNDO:
+                return mitri.undo();
             default:
                 return mitri.showError("I'm sorry, but I don't know what that means :(");
             }
@@ -115,6 +123,23 @@ public class Parser {
             return mitri.showError("Index out of bounds. Please give the correct index!");
         } catch (IllegalArgumentException error) {
             return mitri.showError(error.getMessage());
+        }
+    }
+
+    public String parseUndo(String input) {
+        assert input != null : "Input string for undo should not be null";
+        assert !input.trim().isBlank() : "Input string for undo should not be empty";
+        switch (input) {
+        case "todo", "deadline", "event":
+            return "delete";
+        case "mark":
+            return "unmark";
+        case "unmark":
+            return "mark";
+        case "delete":
+            return "add";
+        default:
+            return mitri.showError("History file is corrupted");
         }
     }
 
