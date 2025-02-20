@@ -9,6 +9,9 @@ import java.time.format.DateTimeParseException;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.Scene;
 
 import mitri.task.Deadline;
 import mitri.task.Event;
@@ -50,11 +53,12 @@ public class Mitri extends Application {
 
     public void start(Stage stage){
         try {
-            javafx.fxml.FXMLLoader fxmlLoader = new javafx.fxml.FXMLLoader(Mitri.class.getResource("/view/Gui.fxml"));
-            javafx.scene.layout.AnchorPane ap = fxmlLoader.load();
-            javafx.scene.Scene scene = new javafx.scene.Scene(ap);
+            FXMLLoader fxmlLoader = new FXMLLoader(Mitri.class.getResource("/view/Gui.fxml"));
+            AnchorPane ap = fxmlLoader.load();
+            Scene scene = new Scene(ap);
             stage.setScene(scene);
             fxmlLoader.<Gui>getController().setParser(parser);  // inject the Duke instance
+            stage.setTitle("Mitri");
             stage.show();
         } catch (java.io.IOException e) {
             e.printStackTrace();
@@ -189,8 +193,7 @@ public class Mitri extends Application {
             return LocalDate.parse(str).atStartOfDay();
         } else if (str.indexOf(':') > 0) {
             return LocalDateTime.of(LocalDate.now(), LocalTime.parse(str));
-        }
-        else {
+        } else {
             throw new DateTimeParseException("Invalid date format.", str, 0);
         }
     }
@@ -246,7 +249,6 @@ public class Mitri extends Application {
     public String list() {
         return "Here are the tasks in your list:" + taskList.toString();
     }
-
 
     /**
      * Finds and returns a list of all tasks whose description contains the given string.
@@ -305,7 +307,17 @@ public class Mitri extends Application {
      */
     public String exit() {
         ui.closeScanner();
-        System.exit(0);
+        Thread exit = new Thread(){
+            public void run(){
+                try {
+                    Thread.sleep(100);
+                    System.exit(0);
+                } catch (InterruptedException e) {
+                    System.exit(1);
+                }
+            }
+        };
+        exit.start();
         return "Bye. Hope to see you again soon!";
     }
 

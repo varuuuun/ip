@@ -28,8 +28,8 @@ public class Deadline extends Task {
      * @return String representation of task.
      */
     @Override
-    public String toString() {
-        return "[D]" + super.toString() + " (by: " + by.format(formatter) + ")";
+    public String toOutputString() {
+        return "[D]" + super.toOutputString() + " (by: " + by.format(formatter) + ")";
     }
 
     /**
@@ -38,7 +38,7 @@ public class Deadline extends Task {
      * @return String representation of task.
      */
     @Override
-    public String toSave() {
-        return "D | " + super.toSave() + " | " + by.toString();
+    public String toString() {
+        return "D | " + super.toString() + " | " + by.toString();
     }
 }

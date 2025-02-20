@@ -9,7 +9,7 @@ import mitri.task.Todo;
 public class TaskListTest {
     @Test
     public void removeTest_indexWithinSize_noError() {
-        TaskList list = new TaskList();
+        mitri.list.TaskList list = new mitri.list.TaskList();
         list.add(new Todo("hello"));
         list.add(new Todo("hi"));
         list.remove(1);
@@ -18,16 +18,16 @@ public class TaskListTest {
 
     @Test
     public void removeTest_tooLargeIndex_exceptionThrown() {
-        TaskList list = new TaskList();
-        assertThrows(IndexOutOfBoundsException.class, () -> list.remove(1));
+        mitri.list.TaskList list = new mitri.list.TaskList();
+        assertThrows(AssertionError.class, () -> list.remove(1));
     }
 
     @Test
     public void removeTest_tooSmallIndex_exceptionThrown() {
-        TaskList list = new TaskList();
+        mitri.list.TaskList list = new mitri.list.TaskList();
         list.add(new Todo("hello"));
         list.add(new Todo("hi"));
-        assertThrows(IndexOutOfBoundsException.class, () -> list.remove(-1));
+        assertThrows(AssertionError.class, () -> list.remove(-1));
     }
 
 }
