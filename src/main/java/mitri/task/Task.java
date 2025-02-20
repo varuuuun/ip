@@ -41,8 +41,8 @@ public abstract class Task {
      *
      * @return String representation of task.
      */
-    @Override
-    public String toString() {
+
+    public String toOutputString() {
         return "[" + getStatusIcon() + "] " + description;
     }
 
@@ -51,7 +51,8 @@ public abstract class Task {
      *
      * @return String representation of task.
      */
-    public String toSave() {
+    @Override
+    public String toString() {
         return (isDone ? "1" : "0") + " | " + description;
     }
 
@@ -64,7 +65,7 @@ public abstract class Task {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Task task) {
-            return this.toString().equals(task.toString());
+            return this.toOutputString().equals(task.toOutputString());
         }
         return false;
     }

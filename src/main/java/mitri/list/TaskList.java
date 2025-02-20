@@ -1,4 +1,4 @@
-package mitri.util;
+package mitri.list;
 
 import java.util.ArrayList;
 
@@ -7,7 +7,7 @@ import mitri.task.Task;
 /**
  * Represents Task list.
  */
-public class TaskList extends BasicTaskList {
+public class TaskList extends BasicList<Task> {
     private ArrayList<Task> tasks;
 
     /**
@@ -76,7 +76,7 @@ public class TaskList extends BasicTaskList {
         StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < tasks.size(); i++) {
-            sb.append("\n\t").append(i + 1).append(". ").append(tasks.get(i));
+            sb.append("\n\t").append(i + 1).append(". ").append(tasks.get(i).toOutputString());
         }
 
         return sb.toString();
@@ -97,10 +97,6 @@ public class TaskList extends BasicTaskList {
         }
 
         return list;
-    }
-
-    public void undo(){
-
     }
 
 }

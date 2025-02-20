@@ -1,4 +1,4 @@
-package mitri.util;
+package mitri.list;
 
 import java.util.ArrayList;
 
@@ -7,7 +7,7 @@ import mitri.task.Task;
 /**
  * Represents Task list.
  */
-public class DeletedTasksList extends BasicTaskList {
+public class DeletedTasksList extends BasicList<Task> {
     private ArrayList<Task> tasks;
 
     /**

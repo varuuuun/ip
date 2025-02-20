@@ -8,9 +8,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
-import java.util.ArrayList;
 
 import mitri.chatbot.Mitri;
+import mitri.list.BasicList;
 
 /**
  * Represents Storage to deal with file IO.
@@ -21,9 +21,9 @@ public class Storage {
     private File historyFile;
     private File deletedTasksFile;
     private Mitri mitri;
-    private TaskList taskList;
-    private DeletedTasksList deletedTasksList;
-    private HistoryList historyList;
+    private mitri.list.TaskList taskList;
+    private mitri.list.DeletedTasksList deletedTasksList;
+    private mitri.list.HistoryList historyList;
     private Parser parser;
 
     /**
@@ -33,8 +33,8 @@ public class Storage {
      * @param mitri Chatbot class to display messages.
      * @param taskList List to store tasks.
      */
-    public Storage(Parser parser, Mitri mitri, TaskList taskList, DeletedTasksList deletedTasksList,
-                   HistoryList historyList) {
+    public Storage(Parser parser, Mitri mitri, mitri.list.TaskList taskList, mitri.list.DeletedTasksList deletedTasksList,
+                   mitri.list.HistoryList historyList) {
         saveFile = new File("data/mitri.txt");
         historyFile = new File("data/history.txt");
         deletedTasksFile = new File("data/deletedTasks.txt");
@@ -64,22 +64,27 @@ public class Storage {
      * Saves tasks by retrieving from task list and writing to file.
      */
     public void writeToSaveFile() {
-        writeTaskToFile(saveFile, taskList);
+        writeToFile(saveFile, taskList);
     }
 
-    public void writeTaskToFile(File file, BasicTaskList list){
+    public void writeToFile(File file, BasicList<? extends Object> list){
         try{
             FileWriter fileWriter = new FileWriter(file);
             StringBuilder writeStr = new StringBuilder();
 
-            for (int i = 0; i < list.size(); i++) {
-                writeStr.append(list.get(i).toSave()).append("\n");
-            }
+            getContentToWrite(list, writeStr);
 
             fileWriter.write(writeStr.toString());
             fileWriter.close();
         } catch (IOException e) {
             mitri.showError("Error in saving changes. " + e.getMessage());
+        }
+    }
+
+    private static void getContentToWrite(BasicList<? extends Object> list, StringBuilder writeStr) {
+        for (int i = 0; i < list.size(); i++) {
+            String contentToWrite = list.get(i).toString();
+            writeStr.append(contentToWrite).append("\n");
         }
     }
 
@@ -105,19 +110,7 @@ public class Storage {
     }
 
     public void writeToHistoryFile() {
-        try{
-            FileWriter fileWriter = new FileWriter(historyFile);
-            StringBuilder writeStr = new StringBuilder();
-
-            for (int i = 0; i < historyList.size(); i++) {
-                writeStr.append(historyList.get(i)).append("\n");
-            }
-
-            fileWriter.write(writeStr.toString());
-            fileWriter.close();
-        } catch (IOException e) {
-            mitri.showError("Error in saving changes. " + e.getMessage());
-        }
+        writeToFile(historyFile, historyList);
     }
 
     public void loadFromHistoryFile() {
@@ -131,15 +124,11 @@ public class Storage {
             fileScanner.close();
         } catch (FileNotFoundException e) {
             mitri.showError("History file not found: " + e.getMessage());
-        } catch (DateTimeParseException e) {
-            mitri.showError("Date/time in wrong format. File may be corrupted.");
-        } catch (IllegalArgumentException e) {
-            mitri.showError("File is corrupted.");
         }
     }
 
-    public void writeToDeletedTasksFile(String task) {
-        writeTaskToFile(deletedTasksFile, deletedTasksList);
+    public void writeToDeletedTasksFile() {
+        writeToFile(deletedTasksFile, deletedTasksList);
     }
 
     public void loadFromDeletedTasksFile() {

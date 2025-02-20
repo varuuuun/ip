@@ -20,8 +20,8 @@ public class Todo extends Task {
      * @return String representation of task.
      */
     @Override
-    public String toString() {
-        return "[T]" + super.toString();
+    public String toOutputString() {
+        return "[T]" + super.toOutputString();
     }
 
     /**
@@ -30,7 +30,7 @@ public class Todo extends Task {
      * @return String representation of task.
      */
     @Override
-    public String toSave() {
-        return "T | " + super.toSave();
+    public String toString() {
+        return "T | " + super.toString();
     }
 }

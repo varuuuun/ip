@@ -1,11 +1,11 @@
-package mitri.util;
+package mitri.list;
 
 import java.util.ArrayList;
 
 /**
  * Represents Task list.
  */
-public class HistoryList{
+public class HistoryList extends BasicList<String> {
     private ArrayList<String> commands;
 
     /**

@@ -30,8 +30,8 @@ public class Event extends Task {
      * @return String representation of task.
      */
     @Override
-    public String toString() {
-        return "[E]" + super.toString() + " (from: " + from.format(formatter) + " to: " + to.format(formatter) + ")";
+    public String toOutputString() {
+        return "[E]" + super.toOutputString() + " (from: " + from.format(formatter) + " to: " + to.format(formatter) + ")";
     }
 
     /**
@@ -40,7 +40,7 @@ public class Event extends Task {
      * @return String representation of task.
      */
     @Override
-    public String toSave() {
-        return "E | " + super.toSave() + " | " + from.toString() + " | " + to.toString();
+    public String toString() {
+        return "E | " + super.toString() + " | " + from.toString() + " | " + to.toString();
     }
 }

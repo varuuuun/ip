@@ -17,9 +17,9 @@ import mitri.task.Todo;
 import mitri.ui.Gui;
 import mitri.util.Parser;
 import mitri.util.Storage;
-import mitri.util.TaskList;
-import mitri.util.HistoryList;
-import mitri.util.DeletedTasksList;
+import mitri.list.TaskList;
+import mitri.list.HistoryList;
+import mitri.list.DeletedTasksList;
 
 
 /**
@@ -91,7 +91,8 @@ public class Mitri extends Application {
         Task t = taskList.remove(index);
         storage.writeToSaveFile();
         deletedTasksList.add(t);
-        return "Got it. I've removed this task:\n\t" + t + "\n" + getLengthString();
+        storage.writeToDeletedTasksFile();
+        return "Got it. I've removed this task:\n\t" + t.toOutputString() + "\n" + getLengthString();
     }
 
     /**
@@ -203,7 +204,7 @@ public class Mitri extends Application {
     public String add(Task t) {
         taskList.add(t);
         storage.writeToSaveFile();
-        return "Got it. I've added this task:\n\t" + t + "\n" + getLengthString();
+        return "Got it. I've added this task:\n\t" + t.toOutputString() + "\n" + getLengthString();
     }
 
     private String getLengthString() {
@@ -221,7 +222,7 @@ public class Mitri extends Application {
         Task t = taskList.get(i);
         t.setDone();
         storage.writeToSaveFile();
-        return "Nice! I've marked this task as done:\n\t" + t;
+        return "Nice! I've marked this task as done:\n\t" + t.toOutputString();
     }
 
     /**
@@ -235,7 +236,7 @@ public class Mitri extends Application {
         Task t = taskList.get(i);
         t.setNotDone();
         storage.writeToSaveFile();
-        return "OK, I've marked this task as not done yet:\n\t" + t;
+        return "OK, I've marked this task as not done yet:\n\t" + t.toOutputString();
     }
 
     /**
@@ -266,6 +267,12 @@ public class Mitri extends Application {
         String command = historyList.remove();
         String[] partsOfCommand = command.split(" ");
         String action = parser.parseUndo(partsOfCommand[0]);
+        doAction(action, partsOfCommand);
+        storage.writeToDeletedTasksFile();
+        return "Last change has been reverted!";
+    }
+
+    private void doAction(String action, String[] partsOfCommand) {
         switch (action) {
         case "delete":
             delete(taskList.size()-1);
@@ -282,8 +289,9 @@ public class Mitri extends Application {
             break;
         }
         storage.writeToHistoryFile();
-        return "Last change has been reverted!";
+        storage.writeToDeletedTasksFile();
     }
+
 
     /**
      * Greets user.
